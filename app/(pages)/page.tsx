@@ -12,12 +12,8 @@ export default function Home() {
       </h1>
 
       <p className="bg-slate-50 px-6 py-4 text-lg md:mx-10">
-        Hi! I&apos;m Iwan Francis, a technical lead at&nbsp;
-        <a href="https://www.apadmi.com/" className="link">
-          Apadmi
-        </a>
-        . With 5 years of experience as a frontend developer, I specialize in
-        crafting user-friendly and accessible web apps that deliver results.
+        Hi! I&apos;m Iwan Francis, a frontend developer looking for senior
+        positions in London!
       </p>
     </Container>
   )
