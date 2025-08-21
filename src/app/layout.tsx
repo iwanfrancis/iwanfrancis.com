@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Josefin_Sans } from 'next/font/google'
-import '../globals.css'
-import BackgroundHoverEffect from '../components/Misc/BackgroundHoverEffect/BackgroundHoverEffect'
+import '@/globals.css'
+import BackgroundHoverEffect from '@/components/misc/background-hover-effect/background-hover-effect'
 
 export const metadata: Metadata = {
   title: 'Iwan Francis',

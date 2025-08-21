@@ -1,4 +1,4 @@
-import Container from '@/app/components/Layout/Container/Container'
+import Container from '@/components/layout/container/container'
 
 export default function CV() {
   return (

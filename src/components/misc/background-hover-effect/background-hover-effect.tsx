@@ -1,7 +1,7 @@
 'use client'
 
-import useMountEffect from '@/app/hooks/useMountEffect/useMountEffect'
-import { isTouchScreen } from '@/app/utils/device'
+import useMountEffect from '@/hooks/use-mount-effect/use-mount-effect'
+import { isTouchScreen } from '@/utils/device'
 import { useRef } from 'react'
 
 function BackgroundHoverEffect() {
