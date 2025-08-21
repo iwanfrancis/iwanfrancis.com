@@ -19,7 +19,7 @@ function BackgroundHoverEffect() {
 
     window.addEventListener('mousemove', handleMouseMove)
 
-    // Adding the mask class once we are confiden that user isn't on a touch screen
+    // Adding the mask class once we are confident that user isn't on a touch screen
     overlay.classList.add('bg-hover-effect-mask')
 
     return () => {

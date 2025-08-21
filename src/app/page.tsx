@@ -7,7 +7,7 @@ export default function Home() {
       rootClassName="min-h-screen py-16 flex flex-col justify-center items-stretch"
       className="flex flex-col items-center"
     >
-      <h1 className="mb-8 bg-slate-50 p-6 pb-0 text-5xl font-semibold leading-none sm:text-7xl md:text-8xl">
+      <h1 className="mb-8 bg-slate-50 p-6 pb-0 text-5xl leading-none font-semibold sm:text-7xl md:text-8xl">
         Iwan Francis
       </h1>
 
