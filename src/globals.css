@@ -1,6 +1,48 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility link {
+  @apply font-bold underline rounded-xs hover:decoration-2;
+}
+
+@utility bg-hover-effect-overlay {
+  position: fixed;
+  z-index: 10;
+  pointer-events: none;
+  width: 200vw;
+  height: 200vh;
+  left: -100vw;
+  top: -100vh;
+  transform-origin: center;
+  background-color: #f8fafc;
+  opacity: 0.8;
+}
+
+@utility bg-hover-effect-mask {
+  -webkit-mask-image: radial-gradient(
+    200px at 50% 50%,
+    transparent 50%,
+    black 100%
+  );
+  mask-image: radial-gradient(200px at 50% 50%, transparent 50%, black 100%);
+}
 
 @layer base {
   html {
@@ -14,36 +56,6 @@
   }
 
   *:focus {
-    @apply outline-none ring-2 ring-yellow-500 ring-offset-2 transition-shadow;
-  }
-}
-
-@layer components {
-  .link {
-    @apply font-bold underline rounded-sm hover:decoration-2;
-  }
-}
-
-@layer utilities {
-  .bg-hover-effect-overlay {
-    position: fixed;
-    z-index: 10;
-    pointer-events: none;
-    width: 200vw;
-    height: 200vh;
-    left: -100vw;
-    top: -100vh;
-    transform-origin: center;
-    background-color: #f8fafc;
-    opacity: 0.8;
-  }
-
-  .bg-hover-effect-mask {
-    -webkit-mask-image: radial-gradient(
-      200px at 50% 50%,
-      transparent 50%,
-      black 100%
-    );
-    mask-image: radial-gradient(200px at 50% 50%, transparent 50%, black 100%);
+    @apply outline-hidden ring-2 ring-yellow-500 ring-offset-2 transition-shadow;
   }
 }
