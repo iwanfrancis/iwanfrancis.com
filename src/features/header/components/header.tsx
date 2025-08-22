@@ -20,16 +20,16 @@ function Header() {
               <Link href="/">Home</Link>
             </NavigationMenuLink>
           </NavigationMenuItem>
-          {/* <NavigationMenuItem>
+          <NavigationMenuItem>
             <NavigationMenuLink asChild>
               <Link href="/cv">Work</Link>
             </NavigationMenuLink>
           </NavigationMenuItem>
-          <NavigationMenuItem>
+          {/* <NavigationMenuItem>
             <NavigationMenuLink asChild>
               <Link href="/experiments">Experiments</Link>
             </NavigationMenuLink>
-          </NavigationMenuItem> */}
+          </NavigationMenuItem>  */}
           <NavigationMenuItem>
             <NavigationMenuTrigger>Links</NavigationMenuTrigger>
             <NavigationMenuContent>

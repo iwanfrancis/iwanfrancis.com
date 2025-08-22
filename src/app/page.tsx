@@ -7,7 +7,7 @@ export default function Home() {
       rootClassName="py-16 flex flex-col items-stretch"
       className="flex flex-col items-center"
     >
-      <h1 className="mb-8 bg-background p-6 pb-0 text-5xl leading-none font-semibold sm:text-7xl md:text-8xl">
+      <h1 className="mb-8 bg-background p-6 pb-0 text-3xl leading-none font-semibold sm:text-4xl md:text-5xl">
         Iwan Francis
       </h1>
 
