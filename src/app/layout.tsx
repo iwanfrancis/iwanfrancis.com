@@ -1,13 +1,15 @@
 import type { Metadata } from 'next'
-import { Josefin_Sans } from 'next/font/google'
+import { Geist } from 'next/font/google'
 import '@/globals.css'
 import BackgroundHoverEffect from '@/components/misc/background-hover-effect/background-hover-effect'
+import Header from '@/features/header/components/header'
+import { cn } from '@/utils/cn'
 
 export const metadata: Metadata = {
   title: 'Iwan Francis',
 }
 
-const font = Josefin_Sans({ subsets: ['latin'] })
+const fontGeist = Geist({ subsets: ['latin'] })
 
 export default function RootLayout({
   children,
@@ -16,9 +18,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={font.className}>
+      <body className={cn(fontGeist.className, 'bg-matrix')}>
         <BackgroundHoverEffect />
-        <div className="relative z-50">{children}</div>
+        <div className="relative z-50">
+          <Header />
+          {children}
+        </div>
       </body>
     </html>
   )

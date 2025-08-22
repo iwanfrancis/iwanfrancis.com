@@ -119,17 +119,23 @@
 
   body {
     @apply bg-background text-foreground;
-    background-size: 30px 30px;
-    background-image: radial-gradient(
-      circle,
-      #525252 1px,
-      rgba(0, 0, 0, 0) 1px
-    );
   }
 
   *:focus {
     @apply outline-hidden ring-2 ring-yellow-500 ring-offset-2 transition-shadow;
   }
+}
+
+@utility bg-matrix {
+  background-size: 32px 32px;
+  background-image: radial-gradient(
+    circle,
+    #525252 1.1px,
+    rgba(0, 0, 0, 0) 1px
+  );
+  background-position: top left;
+  background-attachment: fixed;
+  padding: 16px;
 }
 
 @utility bg-hover-effect-overlay {
