@@ -7,7 +7,7 @@ export default function CV() {
       rootClassName="py-16 flex flex-col items-stretch"
       className="flex flex-col items-center"
     >
-      <h1 className="mb-8 bg-background p-6 pb-0 text-3xl leading-none font-semibold sm:text-4xl md:text-5xl">
+      <h1 className="font-josefin mb-8 bg-background p-6 pb-0 text-3xl leading-none font-semibold sm:text-4xl md:text-5xl">
         CV
       </h1>
 
@@ -104,7 +104,6 @@ export default function CV() {
           Graduate Consultant, 2018 — 2019
         </p>
 
-        <h4 className="font-medium">Responsibilities:</h4>
         <ul className="list-disc pl-6">
           <li>
             Completed extensive technical and professional training, including
@@ -122,7 +121,6 @@ export default function CV() {
           Undergraduate Placement Student, 2016 — 2017
         </p>
 
-        <h4 className="font-medium">Responsibilities:</h4>
         <ul className="list-disc pl-6">
           <li>
             Led development and maintenance of tooling for a major DevOps
