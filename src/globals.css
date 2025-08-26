@@ -134,14 +134,13 @@
 }
 
 @utility bg-matrix {
-  background-size: 32px 32px;
+  background-size: 20px 20px;
   background-image: radial-gradient(
     circle,
     #525252 1.1px,
     rgba(0, 0, 0, 0) 1px
   );
   background-position: top left;
-  padding: 16px;
 }
 
 @utility bg-hover-effect-overlay {
