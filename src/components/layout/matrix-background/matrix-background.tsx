@@ -1,10 +1,16 @@
 'use client'
 
 import useMountEffect from '@/hooks/use-mount-effect/use-mount-effect'
+import { cn } from '@/utils/cn'
 import { isTouchScreen } from '@/utils/device'
 import { useRef } from 'react'
 
-function BackgroundHoverEffect() {
+type MatrixBackgroundProps = {
+  children: React.ReactNode
+  className?: string
+}
+
+function MatrixBackground({ children, className }: MatrixBackgroundProps) {
   const overlayRef = useRef<HTMLDivElement>(null)
 
   useMountEffect(() => {
@@ -27,7 +33,12 @@ function BackgroundHoverEffect() {
     }
   })
 
-  return <div ref={overlayRef} className="bg-hover-effect-overlay" />
+  return (
+    <div className={cn('bg-matrix relative overflow-hidden', className)}>
+      <div ref={overlayRef} className="bg-hover-effect-overlay" />
+      <div className="relative z-20">{children}</div>
+    </div>
+  )
 }
 
-export default BackgroundHoverEffect
+export default MatrixBackground

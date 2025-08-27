@@ -5,6 +5,7 @@ import BackgroundHoverEffect from '@/components/misc/background-hover-effect/bac
 import Header from '@/components/navigation/header/header'
 import { cn } from '@/utils/cn'
 import Footer from '@/components/navigation/footer/footer'
+import MatrixBackground from '@/components/layout/matrix-background/matrix-background'
 
 export const metadata: Metadata = {
   title: 'Iwan Francis',
@@ -27,16 +28,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={cn(
-          fontGeist.className,
-          fontJosefin.variable,
-          'bg-matrix font-geist'
-        )}
+        className={cn(fontGeist.className, fontJosefin.variable, 'font-geist')}
       >
-        <BackgroundHoverEffect />
-        <div className="relative z-50 flex flex-col min-h-screen">
+        <div className="relative flex flex-col min-h-screen">
           <Header />
-          <div className="flex-grow">{children}</div>
+          <MatrixBackground className="flex-grow">{children}</MatrixBackground>
           <Footer />
         </div>
       </body>
