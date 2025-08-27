@@ -4,10 +4,12 @@ export default function Experiments() {
   return (
     <Container
       as="main"
-      rootClassName="min-h-screen py-16 flex flex-col justify-center items-stretch"
-      className="flex min-h-[60vh] w-full flex-col items-center gap-y-4 rounded-lg bg-white p-8 text-center shadow-2xl"
+      rootClassName="py-16 flex flex-col items-stretch"
+      className="flex flex-col items-center"
     >
-      <h1 className="text-4xl sm:text-5xl md:text-6xl">Exeriments</h1>
+      <h1 className="mb-8 bg-background p-6 pb-0 text-3xl leading-none font-josefin font-semibold sm:text-4xl md:text-5xl">
+        Experiments
+      </h1>
     </Container>
   )
 }

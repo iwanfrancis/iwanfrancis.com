@@ -8,6 +8,9 @@ import Footer from '@/components/navigation/footer/footer'
 
 export const metadata: Metadata = {
   title: 'Iwan Francis',
+  icons: {
+    icon: '/logo.svg',
+  },
 }
 
 const fontGeist = Geist({ subsets: ['latin'], variable: '--font-geist' })
