@@ -1,5 +1,6 @@
 import Container from '@/components/layout/container/container'
 import CompanyLogo from './_components/company-logo'
+import { Separator } from '@/components/layout/seperator/separator'
 
 export default function CV() {
   return (
@@ -12,7 +13,7 @@ export default function CV() {
         CV
       </h1>
 
-      <div className="self-start flex flex-col items-start [&>*]:bg-background">
+      <div className="self-start flex flex-col items-start bg-background px-2">
         <p className="py-4">
           Customer focused Senior Frontend Developer with experience leading
           teams and delivering exceptional user experiences. I&apos;m committed
@@ -20,6 +21,9 @@ export default function CV() {
           practices. Looking for a position where I can own and shape a product
           that I truly believe in.
         </p>
+
+        <h2 className="font-josefin text-3xl">Experience</h2>
+        <Separator orientation="horizontal" decorative className="mb-4" />
 
         <div className="grid gap-x-2 mb-4">
           <CompanyLogo
@@ -165,6 +169,12 @@ export default function CV() {
             (Node.js), Perl, and web languages.
           </li>
         </ul>
+
+        {/* <h2 className="font-josefin text-3xl mt-8">Skills</h2>
+        <Separator orientation="horizontal" decorative className="mb-4" />
+
+        <h2 className="font-josefin text-3xl">Education</h2>
+        <Separator orientation="horizontal" decorative className="mb-4" /> */}
       </div>
     </Container>
   )
