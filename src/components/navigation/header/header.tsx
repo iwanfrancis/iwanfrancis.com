@@ -6,7 +6,7 @@ import Link from 'next/link'
 function Header() {
   return (
     <nav className="bg-background">
-      <Container className="flex justify-between items-center p-2">
+      <Container className="flex justify-between items-center p-2 px-4">
         <Link href="/" aria-label="Iwan Francis - Go to homepage">
           <Logo />
         </Link>

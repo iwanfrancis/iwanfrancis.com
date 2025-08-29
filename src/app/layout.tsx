@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { Geist, Josefin_Sans } from 'next/font/google'
 import '@/globals.css'
-import BackgroundHoverEffect from '@/components/misc/background-hover-effect/background-hover-effect'
 import Header from '@/components/navigation/header/header'
 import { cn } from '@/utils/cn'
 import Footer from '@/components/navigation/footer/footer'
@@ -10,7 +9,7 @@ import MatrixBackground from '@/components/layout/matrix-background/matrix-backg
 export const metadata: Metadata = {
   title: 'Iwan Francis',
   icons: {
-    icon: '/logo.svg',
+    icon: '/logos/if.svg',
   },
 }
 

@@ -1,4 +1,5 @@
 import Container from '@/components/layout/container/container'
+import CompanyLogo from './_components/company-logo'
 
 export default function CV() {
   return (
@@ -11,7 +12,7 @@ export default function CV() {
         CV
       </h1>
 
-      <div className="self-start flex flex-col items-start [&>*]:bg-background px-2">
+      <div className="self-start flex flex-col items-start [&>*]:bg-background">
         <p className="py-4">
           Customer focused Senior Frontend Developer with experience leading
           teams and delivering exceptional user experiences. I&apos;m committed
@@ -20,10 +21,17 @@ export default function CV() {
           that I truly believe in.
         </p>
 
-        <h3 className="font-medium text-xl">Apadmi</h3>
-        <p className="text-sm text-muted-foreground">
-          Technical Lead, July 2023 — April 2025
-        </p>
+        <div className="grid gap-x-2 mb-4">
+          <CompanyLogo
+            src="/logos/apadmi.svg"
+            alt="Apadmi Logo"
+            className="row-span-2"
+          />
+          <h3 className="font-medium text-xl col-start-2">Apadmi</h3>
+          <p className="text-sm text-muted-foreground col-start-2">
+            Technical Lead, July 2023 — April 2025
+          </p>
+        </div>
         <ul className="list-disc pl-6">
           <li>
             Architected and led the phased rebuild of a major student letting
@@ -99,10 +107,17 @@ export default function CV() {
           </li>
         </ul>
 
-        <h3 className="font-medium text-xl mt-8">Red Hat</h3>
-        <p className="text-sm text-muted-foreground">
-          Graduate Consultant, 2018 — 2019
-        </p>
+        <div className="grid gap-x-2 mt-8 mb-4">
+          <CompanyLogo
+            src="/logos/redhat.svg"
+            alt="Red Hat Logo"
+            className="row-span-2"
+          />
+          <h3 className="font-medium text-xl col-start-2">Red Hat</h3>
+          <p className="text-sm text-muted-foreground col-start-2">
+            Graduate Consultant, 2018 — 2019
+          </p>
+        </div>
 
         <ul className="list-disc pl-6">
           <li>
@@ -116,10 +131,17 @@ export default function CV() {
           </li>
         </ul>
 
-        <h3 className="font-medium text-xl mt-8">IBM</h3>
-        <p className="text-sm text-muted-foreground">
-          Undergraduate Placement Student, 2016 — 2017
-        </p>
+        <div className="grid gap-x-2 mt-8 mb-4">
+          <CompanyLogo
+            src="/logos/ibm.svg"
+            alt="IBM Logo"
+            className="row-span-2"
+          />
+          <h3 className="font-medium text-xl col-start-2">IBM</h3>
+          <p className="text-sm text-muted-foreground col-start-2">
+            Undergraduate Placement Student, 2016 — 2017
+          </p>
+        </div>
 
         <ul className="list-disc pl-6">
           <li>
