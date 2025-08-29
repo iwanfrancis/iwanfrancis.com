@@ -23,7 +23,7 @@ function Container<E extends ElementType = typeof defaultElement>({
     <Component
       className={cn('mx-auto max-w-7xl px-4 sm:px-6 lg:px-8', rootClassName)}
     >
-      <div className={cn('mx-auto max-w-4xl', className)}>{children}</div>
+      <div className={cn('mx-auto max-w-3xl', className)}>{children}</div>
     </Component>
   )
 }
