@@ -1,7 +1,6 @@
 import Container from '@/components/layout/container/container'
-import CompanyLogo from './_components/company-logo'
 import { Separator } from '@/components/layout/seperator/separator'
-import ExternalLink from '@/components/navigation/external-link/external-link'
+import CompanyHeader from './_components/company-header'
 
 export default function CV() {
   return (
@@ -26,19 +25,14 @@ export default function CV() {
         <h2 className="font-josefin text-3xl">Experience</h2>
         <Separator orientation="horizontal" decorative className="mb-4" />
 
-        <div className="grid gap-x-2 mb-4">
-          <CompanyLogo
-            src="/logos/apadmi.svg"
-            alt="Apadmi Logo"
-            className="row-span-2"
-          />
-          <ExternalLink href="https://www.apadmi.com">
-            <h3 className="font-medium text-xl col-start-2">Apadmi</h3>
-          </ExternalLink>
-          <p className="text-sm text-muted-foreground col-start-2">
-            Technical Lead, July 2023 — April 2025
-          </p>
-        </div>
+        <CompanyHeader
+          company="Apadmi"
+          website="https://apadmi.com"
+          logoSrc="/logos/apadmi.svg"
+          subTitle="Technical Lead, July 2023 — April 2025"
+          className="mb-4"
+        />
+
         <ul className="list-disc pl-6">
           <li>
             Architected and led the phased rebuild of a major student letting
@@ -114,19 +108,13 @@ export default function CV() {
           </li>
         </ul>
 
-        <div className="grid gap-x-2 mt-8 mb-4">
-          <CompanyLogo
-            src="/logos/redhat.svg"
-            alt="Red Hat Logo"
-            className="row-span-2"
-          />
-          <ExternalLink href="https://www.redhat.com">
-            <h3 className="font-medium text-xl col-start-2">Red Hat</h3>
-          </ExternalLink>
-          <p className="text-sm text-muted-foreground col-start-2">
-            Graduate Consultant, 2018 — 2019
-          </p>
-        </div>
+        <CompanyHeader
+          company="Red Hat"
+          website="https://www.redhat.com"
+          logoSrc="/logos/redhat.svg"
+          subTitle="Graduate Consultant, 2018 — 2019"
+          className="mt-8 mb-4"
+        />
 
         <ul className="list-disc pl-6">
           <li>
@@ -140,19 +128,13 @@ export default function CV() {
           </li>
         </ul>
 
-        <div className="grid gap-x-2 mt-8 mb-4">
-          <CompanyLogo
-            src="/logos/ibm.svg"
-            alt="IBM Logo"
-            className="row-span-2"
-          />
-          <ExternalLink href="https://ibm.com">
-            <h3 className="font-medium text-xl col-start-2">IBM</h3>
-          </ExternalLink>
-          <p className="text-sm text-muted-foreground col-start-2">
-            Undergraduate Placement Student, 2016 — 2017
-          </p>
-        </div>
+        <CompanyHeader
+          company="IBM"
+          website="https://ibm.com"
+          logoSrc="/logos/ibm.svg"
+          subTitle="Undergraduate Placement Student, 2016 — 2017"
+          className="mt-8 mb-4"
+        />
 
         <ul className="list-disc pl-6">
           <li>
