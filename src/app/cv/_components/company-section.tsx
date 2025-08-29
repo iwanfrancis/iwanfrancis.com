@@ -64,7 +64,7 @@ function CompanySection({
           )}
 
           {skills?.length && (
-            <ul className="col-span-2 md:col-span-1 md:col-start-2 flex gap-2 mt-2">
+            <ul className="col-span-2 md:col-span-1 md:col-start-2 flex flex-wrap gap-2 mt-2">
               {skills?.map((skill) => (
                 <li key={skill}>
                   <Badge variant="outline">{skill}</Badge>
