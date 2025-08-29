@@ -20,7 +20,9 @@ function MatrixBackground({ children, className }: MatrixBackgroundProps) {
 
     const handleMouseMove = (event: MouseEvent) => {
       const { clientX, clientY } = event
-      overlay.style.transform = `translate(${clientX}px, ${clientY}px)`
+      const scrollX = window.scrollX || window.pageXOffset
+      const scrollY = window.scrollY || window.pageYOffset
+      overlay.style.transform = `translate(${clientX + scrollX}px, ${clientY + scrollY}px)`
     }
 
     window.addEventListener('mousemove', handleMouseMove)
