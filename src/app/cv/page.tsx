@@ -32,6 +32,18 @@ export default function CV() {
           logoSrc="/logos/apadmi.svg"
           subTitle="Technical Lead, July 2023 — April 2025"
           summary="Led projects for clients across a wide variety of industries, including student letting, insurance, telecoms and healthcare. Specialised in frontend development, building scalable, accessible, and performant solutions. Pioneered best practices for testing and accessibility."
+          skills={[
+            'React',
+            'TypeScript',
+            'Next.js',
+            'Node.js',
+            'Jest',
+            'Cypress',
+            'Storybook',
+            'REST',
+            'GraphQL',
+            'AWS',
+          ]}
           className="mb-4"
         >
           <ul className="list-disc pl-6">
@@ -117,6 +129,7 @@ export default function CV() {
           logoSrc="/logos/redhat.svg"
           subTitle="Graduate Consultant, 2018 — 2019"
           summary="Participated in an extensive technical and professional training program, gaining valuable experience in the Red Hat portfolio and agile working methodologies."
+          skills={['RHEL', 'OpenShift', 'Ansible', 'Scrum']}
           className="mt-8 mb-4"
         >
           <ul className="list-disc pl-6">
@@ -140,6 +153,7 @@ export default function CV() {
           summary={
             'Developed and maintained tooling to support a major database migration project affecting hundreds of staff across the Hursley site.'
           }
+          skills={['Java', 'Perl', 'TypeScript', 'Angular', 'HTML', 'CSS']}
           className="mt-8 mb-4"
         >
           <ul className="list-disc pl-6">

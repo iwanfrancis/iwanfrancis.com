@@ -11,6 +11,7 @@ import CompanyLogo from './company-logo'
 import ExternalLink from '@/components/navigation/external-link/external-link'
 import { Button } from '@/components/inputs/button/button'
 import { ChevronDown } from 'lucide-react'
+import { Badge } from '@/components/data-display/badge/badge'
 
 type CompanySectionProps = {
   company: string
@@ -18,6 +19,7 @@ type CompanySectionProps = {
   logoSrc: string
   subTitle: string
   summary?: string
+  skills?: string[]
   className?: string
   children: ReactNode | ReactNode[]
 }
@@ -28,6 +30,7 @@ function CompanySection({
   logoSrc,
   subTitle,
   summary,
+  skills,
   className,
   children,
 }: CompanySectionProps) {
@@ -55,12 +58,22 @@ function CompanySection({
           </p>
 
           {summary && (
-            <p className="my-2 text-sm col-span-2 md:col-span-1 md:col-start-2">
+            <p className="mt-2 text-sm col-span-2 md:col-span-1 md:col-start-2">
               {summary}
             </p>
           )}
 
-          <CollapsibleContent className="mb-4 text-sm col-span-2 md:col-span-1 md:col-start-2">
+          {skills?.length && (
+            <ul className="col-span-2 md:col-span-1 md:col-start-2 flex gap-2 mt-2">
+              {skills?.map((skill) => (
+                <li key={skill}>
+                  <Badge variant="outline">{skill}</Badge>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <CollapsibleContent className="text-sm col-span-2 md:col-span-1 md:col-start-2 mt-2">
             {children}
           </CollapsibleContent>
         </div>
@@ -68,7 +81,7 @@ function CompanySection({
           <Button
             variant="ghost"
             size="xs"
-            className="text-muted-foreground col-span-2"
+            className="text-muted-foreground col-span-2 mt-2"
           >
             {isOpen ? 'see less' : 'see more'}
           </Button>
