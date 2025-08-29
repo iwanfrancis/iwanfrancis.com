@@ -3,9 +3,9 @@
 import {
   Collapsible,
   CollapsibleTrigger,
+  CollapsibleContent,
 } from '@/components/layout/collapsible/collapsible'
 import { ReactNode, useState } from 'react'
-import { CollapsibleContent } from '@radix-ui/react-collapsible'
 import { cn } from '@/utils/cn'
 import CompanyLogo from './company-logo'
 import ExternalLink from '@/components/navigation/external-link/external-link'

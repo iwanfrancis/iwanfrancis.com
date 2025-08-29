@@ -10,12 +10,12 @@ export default function CV() {
       rootClassName="py-16 flex flex-col items-stretch"
       className="flex flex-col items-center"
     >
-      <h1 className="font-josefin mb-8 bg-background p-6 pb-0 text-3xl leading-none font-semibold sm:text-4xl md:text-5xl">
+      <h1 className="font-josefin bg-background p-6 pb-0 text-3xl leading-none font-semibold sm:text-4xl md:text-5xl">
         CV
       </h1>
 
-      <div className="self-start flex flex-col items-start bg-background px-2">
-        <p className="py-4">
+      <div className="self-start flex flex-col items-start bg-background p-2 md:p-4 mt-8">
+        <p>
           Customer focused Senior Frontend Developer with experience leading
           teams and delivering exceptional user experiences. I&apos;m committed
           to writing high quality, scalable code and driving technical best
@@ -23,7 +23,7 @@ export default function CV() {
           that I truly believe in.
         </p>
 
-        <h2 className="font-josefin text-3xl">Experience</h2>
+        <h2 className="font-josefin text-3xl mt-8">Experience</h2>
         <Separator orientation="horizontal" decorative className="mb-4" />
 
         <CompanySection
@@ -44,7 +44,6 @@ export default function CV() {
             'GraphQL',
             'AWS',
           ]}
-          className="mb-4"
         >
           <ul className="list-disc pl-6">
             <li>
@@ -130,7 +129,7 @@ export default function CV() {
           subTitle="Graduate Consultant, 2018 — 2019"
           summary="Participated in an extensive technical and professional training program, gaining valuable experience in the Red Hat portfolio and agile working methodologies."
           skills={['RHEL', 'OpenShift', 'Ansible', 'Scrum']}
-          className="mt-8 mb-4"
+          className="mt-4"
         >
           <ul className="list-disc pl-6">
             <li>
@@ -154,7 +153,7 @@ export default function CV() {
             'Developed and maintained tooling to support a major database migration project affecting hundreds of staff across the Hursley site.'
           }
           skills={['Java', 'Perl', 'TypeScript', 'Angular', 'HTML', 'CSS']}
-          className="mt-8 mb-4"
+          className="mt-4"
         >
           <ul className="list-disc pl-6">
             <li>
