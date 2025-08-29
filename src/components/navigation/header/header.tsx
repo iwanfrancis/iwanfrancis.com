@@ -7,7 +7,11 @@ function Header() {
   return (
     <nav className="bg-background">
       <Container className="flex justify-between items-center p-2 px-4">
-        <Link href="/" aria-label="Iwan Francis - Go to homepage">
+        <Link
+          href="/"
+          aria-label="Iwan Francis - Go to homepage"
+          className="rounded-md"
+        >
           <Logo />
         </Link>
         <div className="flex items-center gap-2">

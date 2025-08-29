@@ -9,7 +9,7 @@ function ExternalLink({ children, className, ...props }: ExternalLinkProps) {
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        'inline-flex gap-1 items-center hover:text-foreground/80',
+        'inline-flex gap-1 items-center hover:text-foreground/80 rounded',
         className
       )}
       {...props}

@@ -24,9 +24,11 @@ function CompanyHeader({
         alt={`${company} Logo`}
         className="row-span-2"
       />
-      <ExternalLink href={website}>
-        <h3 className="font-medium text-xl col-start-2">{company}</h3>
-      </ExternalLink>
+      <div className="col-start-2">
+        <ExternalLink href={website}>
+          <h3 className="font-medium text-xl col-start-2">{company}</h3>
+        </ExternalLink>
+      </div>
       <p className="text-sm text-muted-foreground col-start-2">{subTitle}</p>
     </div>
   )
