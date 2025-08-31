@@ -21,7 +21,7 @@ type CompanySectionProps = {
   summary?: string
   skills?: string[]
   className?: string
-  children: ReactNode | ReactNode[]
+  children?: ReactNode | ReactNode[]
 }
 
 function CompanySection({
@@ -73,19 +73,24 @@ function CompanySection({
             </ul>
           )}
 
-          <CollapsibleContent className="text-sm col-span-2 md:col-span-1 md:col-start-2 mt-2">
-            {children}
-          </CollapsibleContent>
+          {children && (
+            <CollapsibleContent className="text-sm col-span-2 md:col-span-1 md:col-start-2 mt-2">
+              {children}
+            </CollapsibleContent>
+          )}
         </div>
-        <CollapsibleTrigger asChild>
-          <Button
-            variant="ghost"
-            size="xs"
-            className="text-muted-foreground col-span-2 mt-2"
-          >
-            {isOpen ? 'see less' : 'see more'}
-          </Button>
-        </CollapsibleTrigger>
+
+        {children && (
+          <CollapsibleTrigger asChild>
+            <Button
+              variant="ghost"
+              size="xs"
+              className="text-muted-foreground col-span-2 mt-2"
+            >
+              {isOpen ? 'see less' : 'see more'}
+            </Button>
+          </CollapsibleTrigger>
+        )}
       </section>
     </Collapsible>
   )

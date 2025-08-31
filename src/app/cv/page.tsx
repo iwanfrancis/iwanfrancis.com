@@ -31,7 +31,7 @@ export default function CV() {
           website={ADDRESSES.APADMI}
           logoSrc="/logos/apadmi.svg"
           subTitle="Technical Lead, July 2023 — April 2025"
-          summary="Led projects for clients across a wide variety of industries, including student letting, insurance, telecoms and healthcare. Specialised in frontend development, building scalable, accessible, and performant solutions. Pioneered best practices for testing and accessibility."
+          summary="Led projects for clients across a wide variety of industries, including student letting, insurance, telecoms and healthcare. Specialised in frontend development, building scalable, accessible, and performant solutions. Pioneered best practices for testing and accessibility within the web team at Apadmi."
           skills={[
             'React',
             'TypeScript',
@@ -179,11 +179,18 @@ export default function CV() {
           </ul>
         </CompanySection>
 
-        {/* <h2 className="font-josefin text-3xl mt-8">Skills</h2>
+        <h2 className="font-josefin text-3xl mt-8">Skills</h2>
         <Separator orientation="horizontal" decorative className="mb-4" />
 
         <h2 className="font-josefin text-3xl">Education</h2>
-        <Separator orientation="horizontal" decorative className="mb-4" /> */}
+        <Separator orientation="horizontal" decorative className="mb-4" />
+
+        <CompanySection
+          company="Cardiff University"
+          website={ADDRESSES.CARDIFF}
+          logoSrc="/logos/cardiff-university.svg"
+          subTitle="Software Engineering BSc, First Class Honours, 2014 — 2018"
+        />
       </div>
     </Container>
   )

@@ -27,7 +27,6 @@ function CollapsibleContent({
 }: React.ComponentProps<typeof CollapsiblePrimitive.CollapsibleContent> & {
   animate?: boolean
 }) {
-  console.log(animate)
   return (
     <CollapsiblePrimitive.CollapsibleContent
       data-slot="collapsible-content"

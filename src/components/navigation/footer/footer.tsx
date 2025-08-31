@@ -22,7 +22,7 @@ function Footer() {
           </Button>
           <Button variant="ghost" size="icon" asChild className="h-8 w-8">
             <a
-              href="https://linkedin.com/in/iwanfrancis"
+              href="https://www.linkedin.com/in/iwan-francis/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn"
