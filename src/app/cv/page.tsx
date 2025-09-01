@@ -179,9 +179,6 @@ export default function CV() {
           </ul>
         </CompanySection>
 
-        <h2 className="font-josefin text-3xl mt-8">Skills</h2>
-        <Separator orientation="horizontal" decorative className="mb-4" />
-
         <h2 className="font-josefin text-3xl">Education</h2>
         <Separator orientation="horizontal" decorative className="mb-4" />
 
