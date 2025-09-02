@@ -38,10 +38,12 @@ function Header() {
         </Link>
         <div className="flex items-center gap-2">
           <Button variant="ghost" className="text-md" asChild>
-            <Link href="/">Home</Link>
+            <Link href="/#hero">Home</Link>
           </Button>
           <Button variant="ghost" className="text-md" asChild>
-            <Link href="/cv">Work</Link>
+            <Link href="/#experience" replace>
+              Experience
+            </Link>
           </Button>
         </div>
       </Container>
