@@ -1,10 +1,14 @@
+import Headshot from './headshot'
+
 function Hero() {
   return (
     <section
       id="hero"
       className="w-full flex flex-col justify-center items-center min-h-dvh"
     >
-      <h1 className="mb-8 bg-background px-6 pt-6 text-3xl leading-none font-josefin font-semibold sm:text-4xl md:text-7xl">
+      <Headshot className="mb-8" />
+
+      <h1 className="mb-8 bg-background px-6 pt-6 text-4xl leading-none font-josefin font-semibold sm:text-5xl md:text-7xl">
         Iwan Francis
       </h1>
 
