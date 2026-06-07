@@ -1,0 +1,30 @@
+schema: spec-driven
+
+context: |
+  Project: Iwan Francis's personal website (iwanfrancis.com) — a CV / landing site
+  with a browser game planned under a subdomain or nested route. See CLAUDE.md for
+  the full picture; keep the two in sync.
+
+  Tech stack:
+  - Next.js 15 (App Router) + React 19, TypeScript strict, path alias @/* -> src/*
+  - Tailwind CSS v4 (config in src/globals.css via @theme, no JS config)
+  - shadcn/ui (new-york) + Radix + lucide-react; styling via cva + cn() (src/utils/cn.ts)
+  - Package manager: yarn (classic). Deployed on Vercel; migrating to Railway.
+
+  Conventions:
+  - RSC by default; add 'use client' only when required.
+  - src/components/ = shared UI grouped by role (data-display, inputs, layout, navigation),
+    one folder per component. src/features/ = page-specific code, promote to components/ when reused.
+  - Prettier: no semicolons, single quotes, 2-space indent. ESLint: next/core-web-vitals +
+    jsx-a11y (accessibility is enforced). Commits: Conventional Commits (commitlint + husky).
+  - No test suite yet.
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours
