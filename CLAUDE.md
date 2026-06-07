@@ -18,12 +18,12 @@ OpenSpec change).
 
 Package manager: **yarn** (classic / v1).
 
-| Command       | What it does                          |
-| ------------- | ------------------------------------- |
-| `yarn dev`    | Start the dev server (localhost:3000) |
-| `yarn build`  | Production build                      |
-| `yarn start`  | Serve the production build            |
-| `yarn lint`   | Run ESLint (`next lint`)              |
+| Command      | What it does                          |
+| ------------ | ------------------------------------- |
+| `yarn dev`   | Start the dev server (localhost:3000) |
+| `yarn build` | Production build                      |
+| `yarn start` | Serve the production build            |
+| `yarn lint`  | Run ESLint (`next lint`)              |
 
 There is no test suite yet.
 
@@ -40,7 +40,8 @@ There is no test suite yet.
 - **`src/app/`** — App Router entry (`layout.tsx`, `page.tsx`, `icon.tsx`). Components are
   React Server Components by default; add `'use client'` only when needed.
 - **`src/components/`** — shared, reusable UI grouped by role: `data-display/`, `inputs/`,
-  `layout/`, `navigation/`. Each component gets its own folder.
+  `layout/`, `navigation/`. These categories mirror MUI's component grouping — follow the same
+  structure when adding new shared components. Each component gets its own folder.
 - **`src/features/`** — page/feature-specific code, e.g. `features/landing/{hero,experience,education}/components/*`.
   Feature code is not shared; promote to `src/components/` only when reused.
 - **`src/config/`** — constants and breakpoints. **`src/hooks/`**, **`src/types/`**, **`src/utils/`** — as named.
@@ -59,9 +60,20 @@ This repo uses **OpenSpec** for spec-driven changes. Non-trivial work (features,
 refactors) should go through a change proposal before implementation. Skills live in
 `.claude/skills/openspec-*`; project context for proposals is in `openspec/config.yaml`.
 
+**Layout** (`openspec/`):
+
+- `specs/` — the main specs: source of truth for current, shipped behaviour.
+- `changes/` — in-flight changes, one folder each, holding the proposal, design, tasks, and the
+  delta specs that change will introduce.
+- `changes/archive/` — completed changes, dated (e.g. `2026-06-07-<name>`).
+
+**Lifecycle**: propose a change → implement its tasks → archive it. On archive, the change's delta
+specs are synced into `specs/` so the main specs always reflect what's shipped. Explore first if the
+problem isn't clear yet.
+
 - `/opsx:propose "<idea>"` — create a change with proposal + design + tasks
 - `/opsx:apply` — implement the tasks of a change
-- `/opsx:archive` — archive a completed change
+- `/opsx:archive` — archive a completed change (syncs deltas into `specs/`)
 - `/opsx:explore` — think through a problem without writing code
 
 ## Known cleanup backlog
@@ -72,3 +84,16 @@ Things noticed but intentionally left for spec-driven tidy-up — don't treat as
 - `components.json` aliases (`@/lib/...`) don't match the actual layout (`@/utils/...`).
 - Folder typo: `src/components/layout/seperator/` → `separator`.
 - `README.md` is a single line; `next.config.mjs` is empty (will likely need `output: 'standalone'` for Railway).
+
+## Self-improvement
+
+When you learn something durable mid-task — or when the user says "reflect on this" — abstract the lesson, generalise it past the immediate case, and persist it. Don't let it die in chat. Route by scope:
+
+- **Project rule, convention, or gotcha** (true for anyone on this repo) → the most specific home: a workspace `CLAUDE.md` (`client/`, `server/`), an `openspec` spec, or this file. New hard rules, tech-stack, or build-order changes go in `openspec/config.yaml` and need explicit sign-off.
+- **Personal working preference** (how Iwan likes Claude to behave) → the user memory system, not here.
+
+Triggers: a user correction that generalises beyond the immediate fix; an undocumented convention you had to infer from the code; a documented rule the code has outgrown (fix it in the same change); an explicit "reflect on this mistake".
+
+Filter: persist only what's non-obvious, durable, and generalisable. Skip one-off facts, anything already in git history or the code, and anything that needs a "future requirements" story to justify.
+
+Writing a rule: lead with NEVER/ALWAYS, state the problem before the fix in 1–3 bullets, show one concrete example at most. No decision trees, no narration. Surface any committed-doc change in your reply — don't bury it.
