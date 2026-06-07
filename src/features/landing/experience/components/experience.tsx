@@ -6,16 +6,25 @@ function Experience() {
   return (
     <section
       id="experience"
-      className="flex flex-col items-start bg-background p-2 md:p-4 mt-8"
+      className="flex flex-col items-start bg-background p-2 md:p-4 mt-16 scroll-mt-16 md:scroll-mt-24"
     >
       <h2 className="font-josefin text-3xl mt-8">Experience</h2>
       <Separator orientation="horizontal" decorative className="mb-4" />
+
+      {/* Valve Space — current role. Add summary, skills and detail bullets when ready. */}
+      <Company
+        company="Valve Space"
+        website={ADDRESSES.VALVE_SPACE}
+        logoSrc="/logos/valve-space.png"
+        subTitle="Senior Software Engineer, November 2025 — Present"
+      />
 
       <Company
         company="Apadmi"
         website={ADDRESSES.APADMI}
         logoSrc="/logos/apadmi.svg"
         subTitle="Technical Lead, July 2023 — April 2025"
+        className="mt-4"
         summary="Led projects for clients across a wide variety of industries, including student letting, insurance, telecoms and healthcare. Specialised in frontend development, building scalable, accessible, and performant solutions. Pioneered best practices for testing and accessibility within the web team at Apadmi."
         skills={[
           'React',
