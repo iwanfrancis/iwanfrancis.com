@@ -36,7 +36,7 @@ function MatrixBackground({ children, className }: MatrixBackgroundProps) {
   })
 
   return (
-    <div className={cn('bg-matrix relative overflow-hidden', className)}>
+    <div className={cn('bg-matrix relative overflow-clip', className)}>
       <div ref={overlayRef} className="bg-hover-effect-overlay" />
       <div className="relative z-20">{children}</div>
     </div>

@@ -122,6 +122,14 @@
 
   html {
     scrollbar-gutter: stable;
+    /* Offset fragment-link landings so sections clear the fixed header. */
+    scroll-padding-top: 4rem;
+  }
+
+  @media (min-width: 48rem) {
+    html {
+      scroll-padding-top: 6rem;
+    }
   }
 
   body {

@@ -6,7 +6,7 @@ function Experience() {
   return (
     <section
       id="experience"
-      className="flex flex-col items-start bg-background p-2 md:p-4 mt-16 scroll-mt-16 md:scroll-mt-24"
+      className="flex flex-col items-start bg-background p-2 md:p-4 mt-16"
     >
       <h2 className="font-josefin text-3xl mt-8">Experience</h2>
       <Separator orientation="horizontal" decorative className="mb-4" />

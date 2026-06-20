@@ -41,9 +41,7 @@ function Header() {
             <Link href="/#hero">Home</Link>
           </Button>
           <Button variant="ghost" className="text-md" asChild>
-            <Link href="/#experience" replace>
-              Experience
-            </Link>
+            <Link href="/#experience">Experience</Link>
           </Button>
         </div>
       </Container>
