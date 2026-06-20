@@ -38,15 +38,36 @@ There is no test suite yet.
 
 ## Architecture & conventions
 
-- **`src/app/`** — App Router entry (`layout.tsx`, `page.tsx`, `icon.tsx`). Components are
+This repo follows **[bulletproof-react](https://github.com/alan2207/bulletproof-react)** — see its
+[project-structure](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md)
+doc. Keep new code within these conventions.
+
+**Folder map** (`src/`):
+
+- **`app/`** — App Router entry (`layout.tsx`, `page.tsx`, `icon.tsx`) and route composition.
   React Server Components by default; add `'use client'` only when needed.
-- **`src/components/`** — shared, reusable UI grouped by role: `data-display/`, `inputs/`,
-  `layout/`, `navigation/`. These categories mirror MUI's component grouping — follow the same
-  structure when adding new shared components. Each component gets its own folder.
-- **`src/features/`** — page/feature-specific code, e.g. `features/landing/{hero,experience,education}/components/*`.
-  Feature code is not shared; promote to `src/components/` only when reused.
-- **`src/config/`** — constants and breakpoints. **`src/hooks/`**, **`src/types/`**, **`src/utils/`** — as named.
+- **`features/`** — feature-scoped code, and the home for most code. One folder per feature
+  (e.g. `features/landing/`), each holding only the sub-folders it needs: `api/`, `assets/`,
+  `components/`, `hooks/`, `stores/`, `types/`, `utils/`. Current features nest by section, e.g.
+  `features/landing/{hero,experience,education}/components/*`. Promote code to a shared layer only
+  once it's actually reused.
+- **`components/`** — shared, reusable UI grouped by role: `data-display/`, `inputs/`, `layout/`,
+  `navigation/`. The role grouping mirrors MUI — a local extension of bulletproof's flat
+  `components/`; keep it. One folder per component.
+- **`config/`**, **`hooks/`**, **`types/`**, **`utils/`** — shared, app-wide, as named.
+  `lib/` (configured library wrappers), `stores/` (global state), `assets/`, and `testing/` are part
+  of the convention too — add them when first needed rather than inventing another location.
+
+**Unidirectional imports** — code flows one way only: **shared → features → app**.
+
+- ALWAYS keep the flow one-way. Shared layers (`components`, `hooks`, `utils`, `types`, `config`,
+  `lib`, `stores`) MUST NOT import from `features/` or `app/`. `features/` may import shared layers;
+  `app/` may import both.
+- NEVER import one feature from another. Compose features together at the `app/` level instead.
 - Import shared code via the `@/` alias; use relative imports only within the same feature folder.
+- Avoid barrel / `index.ts` re-export files — import the specific file directly.
+- Not auto-enforced: Biome has no path-boundary rule equivalent to bulletproof's ESLint
+  `import/no-restricted-paths`, so these import rules rely on you and on review.
 
 ## Code style
 

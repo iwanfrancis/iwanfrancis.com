@@ -11,12 +11,19 @@ context: |
   - shadcn/ui (new-york) + Radix + lucide-react; styling via cva + cn() (src/utils/cn.ts)
   - Package manager: yarn (classic). Deployed on Vercel; migrating to Railway.
 
-  Conventions:
+  Architecture: follows bulletproof-react (github.com/alan2207/bulletproof-react).
   - RSC by default; add 'use client' only when required.
-  - src/components/ = shared UI grouped by role (data-display, inputs, layout, navigation),
-    one folder per component. src/features/ = page-specific code, promote to components/ when reused.
-  - Prettier: no semicolons, single quotes, 2-space indent. ESLint: next/core-web-vitals +
-    jsx-a11y (accessibility is enforced). Commits: Conventional Commits (commitlint + husky).
+  - src/features/ = feature-scoped code (api, components, hooks, stores, types, utils per feature),
+    home for most code. src/components/ = shared UI grouped by role (data-display, inputs, layout,
+    navigation), one folder per component. Promote to a shared layer only once reused.
+  - Unidirectional imports: shared -> features -> app, one way only. Shared layers must not import
+    from features/ or app/; never import one feature from another (compose at app/). Avoid barrel
+    files. Not auto-enforced (Biome has no import/no-restricted-paths equivalent).
+
+  Tooling:
+  - Biome (no ESLint/Prettier): no semicolons, single quotes, 2-space indent, ES5 trailing commas;
+    recommended + react/next domains + a11y group (accessibility enforced).
+  - Commits: Conventional Commits (commitlint + husky); lint-staged runs biome check --write.
   - No test suite yet.
 
 # Per-artifact rules (optional)
