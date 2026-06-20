@@ -4,15 +4,16 @@ Guidance for Claude Code when working in this repository.
 
 ## Project
 
-Personal website for Iwan Francis — live at **iwanfrancis.com**. A single-page CV /
+Personal website for Iwan Francis — live at **iwans.space**. A single-page CV /
 landing site (hero, experience, education) with room to grow.
 
 A browser game is in progress as a **separate project** with its own deployment. It
-will live at a subdomain (e.g. `game.iwanfrancis.com`), not inside this app — this repo's
+will live at a subdomain (e.g. `balls.iwans.space`), not inside this app — this repo's
 only involvement is linking out to it.
 
-Currently deployed on **Vercel**; a migration to **Railway** is planned (a good first
-OpenSpec change).
+Deployed on **Railway**, served at **iwans.space** with DNS on **Cloudflare** (proxied /
+orange cloud). The legacy domain **iwanfrancis.com** 301-redirects to it. Previously hosted
+on Vercel.
 
 ## Commands
 
@@ -112,7 +113,7 @@ Things noticed but intentionally left for spec-driven tidy-up — don't treat as
 - `src/app/page.tsx` imports `Education` but never renders it (dead import).
 - `components.json` aliases (`@/lib/...`) don't match the actual layout (`@/utils/...`).
 - Folder typo: `src/components/layout/seperator/` → `separator`.
-- `README.md` is a single line; `next.config.mjs` is empty (will likely need `output: 'standalone'` for Railway).
+- `README.md` is a single line.
 
 ## Self-improvement
 

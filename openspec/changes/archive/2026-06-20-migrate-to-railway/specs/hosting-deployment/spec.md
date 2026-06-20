@@ -60,18 +60,25 @@ dependency at serve time.
 
 ### Requirement: Custom domain served over HTTPS
 
-The apex domain `iwanfrancis.com` and the `www` subdomain SHALL resolve to the Railway
-deployment and SHALL be served over a valid HTTPS certificate.
+The site SHALL be served over HTTPS at the canonical domain `iwans.space` (apex and `www`),
+which SHALL resolve to the Railway deployment via the Cloudflare proxy fronting it, with a
+valid HTTPS certificate. The legacy domain `iwanfrancis.com` SHALL permanently redirect (301)
+to `iwans.space`.
 
-#### Scenario: Apex domain serves over HTTPS
+#### Scenario: Canonical domain serves over HTTPS
+
+- **WHEN** a visitor requests `https://iwans.space`
+- **THEN** the site is served over HTTPS with a valid certificate, from the Railway origin
+
+#### Scenario: www serves the same site
+
+- **WHEN** a visitor requests `https://www.iwans.space`
+- **THEN** it serves or redirects to the same site over HTTPS
+
+#### Scenario: Legacy domain redirects to the canonical domain
 
 - **WHEN** a visitor requests `https://iwanfrancis.com`
-- **THEN** Railway serves the site with a valid TLS certificate
-
-#### Scenario: www resolves to the same site
-
-- **WHEN** a visitor requests the `www` subdomain
-- **THEN** it serves or redirects to the same site over HTTPS
+- **THEN** it is permanently redirected (301) to `iwans.space`
 
 ### Requirement: Automatic deploy on push to main
 
