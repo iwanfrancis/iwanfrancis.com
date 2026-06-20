@@ -1,5 +1,4 @@
 import Container from '@/components/layout/container/container'
-import Education from '@/features/landing/education/components/education'
 import Experience from '@/features/landing/experience/components/experience'
 import Hero from '@/features/landing/hero/components/hero'
 
