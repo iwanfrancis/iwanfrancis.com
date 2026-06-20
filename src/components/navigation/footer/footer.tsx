@@ -3,6 +3,7 @@ import { Button } from '@/components/inputs/button/button'
 import Container from '@/components/layout/container/container'
 import { EMAIL } from '@/config/constants'
 import ScrollToTopButton from './scroll-to-top-button'
+import ThemeToggleButton from './theme-toggle-button'
 
 function Footer() {
   return (
@@ -35,6 +36,7 @@ function Footer() {
               <Mail className="h-4 w-4" />
             </a>
           </Button>
+          <ThemeToggleButton />
           <ScrollToTopButton />
         </div>
       </Container>

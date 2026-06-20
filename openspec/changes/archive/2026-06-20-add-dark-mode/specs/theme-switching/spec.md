@@ -1,0 +1,119 @@
+## ADDED Requirements
+
+### Requirement: First visit follows the operating-system colour preference
+
+On a visitor's first load, with no stored preference, the site SHALL render in the
+theme matching the visitor's OS-level colour scheme (`prefers-color-scheme`).
+
+#### Scenario: OS set to dark, no stored preference
+
+- **WHEN** a visitor with no previously stored theme loads the site and their OS
+  colour scheme is dark
+- **THEN** the site renders in dark mode
+
+#### Scenario: OS set to light, no stored preference
+
+- **WHEN** a visitor with no previously stored theme loads the site and their OS
+  colour scheme is light
+- **THEN** the site renders in light mode
+
+### Requirement: Visitors can toggle the theme from the footer
+
+The footer SHALL present a single icon button that switches between light and dark
+themes. The button SHALL show a moon while light is active and a sun while dark is
+active (or an equivalent two-icon affordance), and SHALL expose an accessible
+label describing the action.
+
+#### Scenario: Toggling from light to dark
+
+- **WHEN** the site is in light mode and the visitor activates the footer theme
+  button
+- **THEN** the site switches to dark mode
+- **AND** the button's icon updates to reflect the new state
+
+#### Scenario: Toggling from dark to light
+
+- **WHEN** the site is in dark mode and the visitor activates the footer theme
+  button
+- **THEN** the site switches to light mode
+
+#### Scenario: Toggle is keyboard accessible
+
+- **WHEN** a visitor focuses the theme button and activates it with the keyboard
+- **THEN** the theme switches, and the button carries an accessible name stating
+  it toggles the theme
+
+### Requirement: The chosen theme persists across visits
+
+An explicitly chosen theme SHALL be stored and reapplied on subsequent loads,
+overriding the OS preference until the visitor changes it again.
+
+#### Scenario: Returning after choosing dark
+
+- **WHEN** a visitor selects dark mode and later reloads or returns to the site
+- **THEN** the site renders in dark mode regardless of the OS colour scheme
+
+### Requirement: No flash of the wrong theme on load
+
+The resolved theme SHALL be applied before first paint so the page does not render
+in one theme and then visibly switch to another.
+
+#### Scenario: Loading with a stored dark preference
+
+- **WHEN** a visitor with a stored dark preference loads the site
+- **THEN** the page paints in dark mode from the first frame, with no flash of
+  light mode
+
+### Requirement: Theme changes animate with a circular reveal
+
+When supported, toggling the theme SHALL animate as a soft-edged circular reveal of
+the new theme expanding from the toggle button, with a feathered (gradient) edge
+echoing the matrix hover spotlight. Where the View Transitions API is unavailable
+(e.g. Firefox) or the visitor prefers reduced motion, the theme SHALL change
+instantly with no animation.
+
+#### Scenario: Reveal on a supporting browser
+
+- **WHEN** a visitor on a browser that supports the View Transitions API activates
+  the theme toggle
+- **THEN** the new theme is revealed by a soft-edged circle expanding from the
+  toggle button to cover the viewport
+- **AND** the resulting theme and persistence behave exactly as an instant switch
+
+#### Scenario: Instant fallback
+
+- **WHEN** a visitor activates the toggle on a browser without View Transitions
+  support, or with `prefers-reduced-motion: reduce` set
+- **THEN** the theme changes instantly without animation
+
+### Requirement: Theme-aware surfaces adapt to the active theme
+
+All visible surfaces SHALL present correctly in both themes. Token-driven surfaces
+(page background, text, header, footer, header logo, buttons, badges, cards,
+borders, focus rings) follow the active theme automatically via the existing
+shadcn tokens. The bespoke surfaces SHALL be made theme-aware:
+
+- The matrix dot-grid background SHALL use a dot colour that reads correctly in
+  both themes.
+- The cursor-follow spotlight overlay SHALL lighten the page periphery in light
+  mode and darken it in dark mode (not wash near-white in dark mode).
+- Company logo plates SHALL keep a light (white) background in both themes so dark
+  company marks stay legible against a dark page.
+
+#### Scenario: Matrix background in dark mode
+
+- **WHEN** the site is in dark mode
+- **THEN** the matrix dot grid is visible against the dark background
+- **AND** the cursor-follow spotlight darkens the periphery rather than washing it
+  near-white
+
+#### Scenario: Company logos in dark mode
+
+- **WHEN** the site is in dark mode and the Experience section is shown
+- **THEN** each company logo sits on a light plate and its mark remains legible
+
+#### Scenario: Header logo in dark mode
+
+- **WHEN** the site is in dark mode
+- **THEN** the header "IF" logo inverts with the theme (light tile, dark mark)
+  without bespoke per-theme styling

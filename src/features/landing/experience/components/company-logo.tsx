@@ -11,7 +11,7 @@ function CompanyLogo({ src, alt, className }: CompanyLogoProps) {
   return (
     <div
       className={cn(
-        'w-12 h-12 rounded-md relative shadow-lg border',
+        'w-12 h-12 rounded-md relative shadow-lg border bg-white',
         className
       )}
     >

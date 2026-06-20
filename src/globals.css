@@ -79,11 +79,13 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --matrix-dot: #525252;
+  --matrix-overlay: #f8fafc;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
+  --background: oklch(0.21 0 0);
+  --foreground: oklch(0.9 0 0);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
@@ -113,6 +115,8 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --matrix-dot: #737373;
+  --matrix-overlay: var(--background);
 }
 
 @layer base {
@@ -141,11 +145,46 @@
   }
 }
 
+/* Theme toggle reveal (driven from the useThemeToggle hook).
+   The new view is masked to a soft-edged circle whose radius (--theme-reveal)
+   animates from 0 to cover the viewport; a registered @property is used because
+   only registered custom properties interpolate. The old view stays static
+   underneath, so the new theme is revealed with a feathered edge that echoes the
+   matrix hover spotlight. The origin/end radius come from JS-set variables. */
+@property --theme-reveal {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+::view-transition-old(root) {
+  animation: none;
+}
+
+::view-transition-new(root) {
+  animation: theme-reveal 0.5s ease-out forwards;
+  mask-image: radial-gradient(
+    circle at var(--theme-reveal-x, 50%) var(--theme-reveal-y, 50%),
+    #000 calc(var(--theme-reveal) - 100px),
+    transparent var(--theme-reveal)
+  );
+  mask-repeat: no-repeat;
+}
+
+@keyframes theme-reveal {
+  from {
+    --theme-reveal: 0px;
+  }
+  to {
+    --theme-reveal: var(--theme-reveal-end, 150vmax);
+  }
+}
+
 @utility bg-matrix {
   background-size: 20px 20px;
   background-image: radial-gradient(
     circle,
-    #525252 1.1px,
+    var(--matrix-dot) 1.1px,
     rgba(0, 0, 0, 0) 1px
   );
   background-position: top left;
@@ -160,7 +199,7 @@
   left: -500vw;
   top: -500vh;
   transform-origin: center;
-  background-color: #f8fafc;
+  background-color: var(--matrix-overlay);
   opacity: 0.8;
 }
 

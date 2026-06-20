@@ -5,6 +5,7 @@ import MatrixBackground from '@/components/layout/matrix-background/matrix-backg
 import Footer from '@/components/navigation/footer/footer'
 import Header from '@/components/navigation/header/header'
 import { cn } from '@/utils/cn'
+import AppProvider from './provider'
 
 export const metadata: Metadata = {
   title: 'Iwan Francis',
@@ -25,15 +26,19 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <body
         className={cn(fontGeist.className, fontJosefin.variable, 'font-geist')}
       >
-        <div className="relative flex flex-col min-h-screen">
-          <Header />
-          <MatrixBackground className="flex-grow">{children}</MatrixBackground>
-          <Footer />
-        </div>
+        <AppProvider>
+          <div className="relative flex flex-col min-h-screen">
+            <Header />
+            <MatrixBackground className="flex-grow">
+              {children}
+            </MatrixBackground>
+            <Footer />
+          </div>
+        </AppProvider>
       </body>
     </html>
   )
