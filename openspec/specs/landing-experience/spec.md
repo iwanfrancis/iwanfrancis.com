@@ -6,9 +6,7 @@ Define how the landing page's Experience section presents Iwan's roles — their
 ordering, the current Valve Space position, and the vertical spacing that keeps
 the section's heading from hugging the top of the viewport (both on scroll and
 when reached via the in-page anchor).
-
 ## Requirements
-
 ### Requirement: Experience roles are listed most-recent first
 
 The Experience section SHALL present roles in reverse-chronological order, with
@@ -54,10 +52,13 @@ not sit flush against the top edge of the viewport.
 ### Requirement: The experience anchor jump lands with space above the heading
 
 Following the "See my work" link to `#experience` SHALL bring the heading into
-view with space above it, not flush to the top of the viewport.
+view with space above it, not flush to the top of the viewport. The space above
+the heading is provided by the global header-clearance offset defined by the
+`section-navigation` capability, not by a per-target `scroll-margin-top`.
 
 #### Scenario: Following the "See my work" link
 
 - **WHEN** a visitor activates the "See my work" link targeting `#experience`
-- **THEN** the page scrolls so the "Experience" heading is visible with a margin
-  of space above it (via `scroll-margin-top` on the anchor target)
+- **THEN** the page scrolls so the "Experience" heading is visible with space
+  above it rather than flush to the top of the viewport
+
