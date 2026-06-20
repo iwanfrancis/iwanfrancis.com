@@ -14,11 +14,15 @@ function Hero() {
       </h1>
 
       <p className="bg-background mt-8 px-6 py-4 text-lg md:mx-10 text-center">
-        I&apos;m Iwan Francis, a senior developer who believes that great
-        products are built with the customer in mind. With a strong foundation
-        in frontend development and a focus on UX, I craft digital experiences
-        that are both functional and delightful, and meet the needs of real
-        users.
+        Senior Software Engineer @{' '}
+        <a
+          href="https://valvespace.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline"
+        >
+          Valve Space
+        </a>
       </p>
 
       <div className="flex gap-4 mt-4 p-2 bg-background">
