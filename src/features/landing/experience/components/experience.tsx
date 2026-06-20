@@ -11,12 +11,21 @@ function Experience() {
       <h2 className="font-josefin text-3xl mt-8">Experience</h2>
       <Separator orientation="horizontal" decorative className="mb-4" />
 
-      {/* Valve Space — current role. Add summary, skills and detail bullets when ready. */}
       <Company
         company="Valve Space"
         website={ADDRESSES.VALVE_SPACE}
         logoSrc="/logos/valve-space.png"
         subTitle="Senior Software Engineer, November 2025 — Present"
+        summary="Developing the product behind a global flexible-workspace marketing platform, helping operators, landlords and brokers across commercial real estate distribute, discover and transact on flexible office space. Working across the stack to build scalable, accessible features that connect workspace supply and demand."
+        skills={[
+          'React',
+          'TypeScript',
+          'Next.js',
+          'GraphQL',
+          'Apollo',
+          'Node.js',
+          'Prisma',
+        ]}
       />
 
       <Company
