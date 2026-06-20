@@ -1,9 +1,9 @@
 'use client'
 
+import { useRef } from 'react'
 import useMountEffect from '@/hooks/use-mount-effect/use-mount-effect'
 import { cn } from '@/utils/cn'
 import { isTouchScreen } from '@/utils/device'
-import { useRef } from 'react'
 
 type MatrixBackgroundProps = {
   children: React.ReactNode

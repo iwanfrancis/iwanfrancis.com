@@ -1,7 +1,6 @@
-import Link from 'next/link'
-import Headshot from './headshot'
-import { Button } from '@/components/inputs/button/button'
 import { Download, Github, Linkedin, Mail } from 'lucide-react'
+import Link from 'next/link'
+import { Button } from '@/components/inputs/button/button'
 import { EMAIL } from '@/config/constants'
 
 function Hero() {
@@ -10,8 +9,6 @@ function Hero() {
       id="hero"
       className="w-full flex flex-col justify-center items-center min-h-dvh"
     >
-      {/* <Headshot className="mb-8" /> */}
-
       <h1 className="bg-background px-6 pt-6 text-4xl leading-none font-josefin font-semibold sm:text-5xl md:text-7xl">
         Iwan Francis
       </h1>

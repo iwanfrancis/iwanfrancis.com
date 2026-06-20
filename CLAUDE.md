@@ -20,10 +20,11 @@ Package manager: **yarn** (classic / v1).
 
 | Command      | What it does                          |
 | ------------ | ------------------------------------- |
-| `yarn dev`   | Start the dev server (localhost:3000) |
-| `yarn build` | Production build                      |
-| `yarn start` | Serve the production build            |
-| `yarn lint`  | Run ESLint (`next lint`)              |
+| `yarn dev`    | Start the dev server (localhost:3000)            |
+| `yarn build`  | Production build                                 |
+| `yarn start`  | Serve the production build                       |
+| `yarn lint`   | Lint + format check, read-only (`biome check .`) |
+| `yarn format` | Format & fix in place (`biome format --write .`) |
 
 There is no test suite yet.
 
@@ -49,10 +50,17 @@ There is no test suite yet.
 
 ## Code style
 
-- **Prettier**: no semicolons, single quotes, 2-space indent, ES5 trailing commas. Don't hand-format against this.
-- **ESLint**: `next/core-web-vitals` + `jsx-a11y/recommended`. Accessibility is enforced — keep it that way.
+- **Biome** (`biome.json`) does both formatting and linting — there is no ESLint or Prettier.
+  Format rules match the old Prettier setup: no semicolons, single quotes, 2-space indent,
+  ES5 trailing commas. Don't hand-format against this.
+- **Linting**: Biome `recommended` rules plus the `react`/`next` domains and the `a11y` group.
+  Accessibility is enforced — keep it that way. A few `@next/next/*` rules have no Biome
+  equivalent (mostly `pages/`-router / `_document` rules this App Router site doesn't use).
+- **Editor**: install the **Biome VS Code extension** (`biomejs.biome`); `.vscode/settings.json`
+  sets it as the default formatter with format + fixes + organise-imports on save.
 - **Commits**: Conventional Commits, enforced by commitlint via a Husky `commit-msg` hook.
-  `lint-staged` runs Prettier + ESLint `--fix` on `pre-commit`. (The existing history also uses gitmoji.)
+  `lint-staged` runs `biome check --write` on staged files on `pre-commit`. (The existing
+  history also uses gitmoji.)
 
 ## OpenSpec workflow
 

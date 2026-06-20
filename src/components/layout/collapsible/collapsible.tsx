@@ -1,7 +1,7 @@
 'use client'
 
-import { cn } from '@/utils/cn'
 import * as CollapsiblePrimitive from '@radix-ui/react-collapsible'
+import { cn } from '@/utils/cn'
 
 function Collapsible({
   ...props
@@ -40,4 +40,4 @@ function CollapsibleContent({
   )
 }
 
-export { Collapsible, CollapsibleTrigger, CollapsibleContent }
+export { Collapsible, CollapsibleContent, CollapsibleTrigger }

@@ -1,5 +1,5 @@
-import { cn } from '@/utils/cn'
 import { ExternalLink as ExternalLinkIcon } from 'lucide-react'
+import { cn } from '@/utils/cn'
 
 type ExternalLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement>
 

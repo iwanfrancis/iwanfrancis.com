@@ -1,7 +1,7 @@
 'use client'
 
-import { Button } from '@/components/inputs/button/button'
 import { ArrowUp } from 'lucide-react'
+import { Button } from '@/components/inputs/button/button'
 
 function ScrollToTopButton() {
   const scrollToTop = () => {

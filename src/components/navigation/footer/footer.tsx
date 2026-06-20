@@ -1,6 +1,6 @@
-import Container from '@/components/layout/container/container'
+import { Github, Linkedin, Mail } from 'lucide-react'
 import { Button } from '@/components/inputs/button/button'
-import { Github, Linkedin, Mail, ArrowUp, Scroll } from 'lucide-react'
+import Container from '@/components/layout/container/container'
 import { EMAIL } from '@/config/constants'
 import ScrollToTopButton from './scroll-to-top-button'
 

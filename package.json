@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "biome check .",
+    "format": "biome format --write .",
     "prepare": "husky"
   },
   "dependencies": {
@@ -23,20 +24,16 @@
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.5.0",
     "@commitlint/cli": "^19.4.1",
     "@commitlint/config-conventional": "^19.4.1",
     "@tailwindcss/postcss": "^4.1.12",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "eslint": "^8",
-    "eslint-config-next": "^15.5.19",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-jsx-a11y": "^6.9.0",
     "husky": "^9.1.5",
     "lint-staged": "^15.2.9",
     "postcss": "^8",
-    "prettier": "3.3.3",
     "tailwindcss": "^4.1.12",
     "tw-animate-css": "^1.3.7",
     "typescript": "^5"
@@ -45,8 +42,7 @@
     "postcss": "8.5.15"
   },
   "lint-staged": {
-    "**/*": "prettier --write --ignore-unknown",
-    "**/*.{ts,tsx}": "npx eslint --fix"
+    "**/*": "biome check --write --no-errors-on-unmatched"
   },
   "commitlint": {
     "extends": [

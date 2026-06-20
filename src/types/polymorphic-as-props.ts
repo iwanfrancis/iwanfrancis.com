@@ -1,4 +1,8 @@
-import { ComponentPropsWithoutRef, ElementType, PropsWithChildren } from 'react'
+import type {
+  ComponentPropsWithoutRef,
+  ElementType,
+  PropsWithChildren,
+} from 'react'
 
 type PolymorphicAsProp<E extends ElementType> = {
   as?: E

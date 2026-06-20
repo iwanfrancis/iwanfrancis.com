@@ -1,17 +1,16 @@
 'use client'
 
+import { type ReactNode, useState } from 'react'
+import { Badge } from '@/components/data-display/badge/badge'
+import { Button } from '@/components/inputs/button/button'
 import {
   Collapsible,
-  CollapsibleTrigger,
   CollapsibleContent,
+  CollapsibleTrigger,
 } from '@/components/layout/collapsible/collapsible'
-import { ReactNode, useState } from 'react'
+import ExternalLink from '@/components/navigation/external-link/external-link'
 import { cn } from '@/utils/cn'
 import CompanyLogo from './company-logo'
-import ExternalLink from '@/components/navigation/external-link/external-link'
-import { Button } from '@/components/inputs/button/button'
-import { ChevronDown } from 'lucide-react'
-import { Badge } from '@/components/data-display/badge/badge'
 
 type CompanySectionProps = {
   company: string

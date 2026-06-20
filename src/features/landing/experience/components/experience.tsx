@@ -1,6 +1,6 @@
+import { Separator } from '@/components/layout/seperator/separator'
 import { ADDRESSES } from '@/config/constants'
 import Company from './company'
-import { Separator } from '@/components/layout/seperator/separator'
 
 function Experience() {
   return (

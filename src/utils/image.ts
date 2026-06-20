@@ -1,4 +1,4 @@
-import { Breakpoint, BREAKPOINTS } from '@/config/breakpoints'
+import { BREAKPOINTS, type Breakpoint } from '@/config/breakpoints'
 import { notEmpty } from './array-filters'
 
 type SrcSetOptions = {

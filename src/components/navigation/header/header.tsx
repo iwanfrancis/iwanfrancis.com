@@ -1,11 +1,11 @@
 'use client'
 
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/inputs/button/button'
 import Container from '@/components/layout/container/container'
 import Logo from '@/components/navigation/header/logo'
 import { cn } from '@/utils/cn'
-import Link from 'next/link'
-import { useEffect, useState } from 'react'
 
 function Header() {
   const [isAtTop, setIsAtTop] = useState(true)

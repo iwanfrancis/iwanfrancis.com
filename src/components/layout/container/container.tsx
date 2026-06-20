@@ -1,6 +1,6 @@
-import PolymorphicProps from '@/types/polymorphic-as-props'
+import type { ElementType, ReactNode } from 'react'
+import type PolymorphicProps from '@/types/polymorphic-as-props'
 import { cn } from '@/utils/cn'
-import { ElementType, ReactNode } from 'react'
 
 const defaultElement = 'div'
 
