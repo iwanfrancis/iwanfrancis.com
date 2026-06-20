@@ -15,7 +15,7 @@
 ## 3. Reformat the codebase
 
 - [x] 3.1 Run `biome check --write` across the repo
-- [ ] 3.2 Commit the reformat as an isolated commit so the diff is reviewable on its own
+- [x] 3.2 Commit the reformat as an isolated commit so the diff is reviewable on its own
 
 ## 4. Wire up scripts and tooling
 
@@ -32,5 +32,5 @@
 ## 6. Verify and document
 
 - [x] 6.1 Verify `yarn lint`, `yarn format`, and `yarn build` all pass
-- [ ] 6.2 Make a test commit to confirm `lint-staged` + the `commit-msg` commitlint hook still work
+- [x] 6.2 Make a test commit to confirm `lint-staged` + the `commit-msg` commitlint hook still work
 - [x] 6.3 Update `CLAUDE.md` (Tech stack, Code style, Commands) and the README to reference Biome and note the Biome VS Code extension requirement
