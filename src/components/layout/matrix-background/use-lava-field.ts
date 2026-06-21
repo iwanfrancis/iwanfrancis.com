@@ -221,9 +221,17 @@ function useLavaField(
     if (!ctx) return
 
     let raf = 0
+    let lastTime = 0
     let scrim = getComputedStyle(canvas).color
+    // Live size — drives the backing store and the scrim fill, so the effect
+    // always covers the whole container even as its height changes.
     let cssW = 0
     let cssH = 0
+    // Anchor size — drives blob positions. Captured at mount and refreshed only
+    // on a viewport resize, so content reflow (expanding/collapsing a section)
+    // doesn't drag the field around.
+    let anchorW = 0
+    let anchorH = 0
 
     const measure = () => {
       cssW = canvas.clientWidth
@@ -231,6 +239,13 @@ function useLavaField(
       canvas.width = Math.max(1, Math.floor(cssW * RENDER_SCALE))
       canvas.height = Math.max(1, Math.floor(cssH * RENDER_SCALE))
       ctx.setTransform(RENDER_SCALE, 0, 0, RENDER_SCALE, 0, 0)
+    }
+
+    // Snapshot the current size as the blob anchor — called at mount and on
+    // viewport resize only, never on content reflow.
+    const reAnchor = () => {
+      anchorW = cssW
+      anchorH = cssH
     }
 
     const draw = (timeMs: number) => {
@@ -252,12 +267,12 @@ function useLavaField(
           (b.x +
             b.xAmp *
               Math.sin(t * b.xFreq * DRIFT_SPEED * Math.PI * 2 + b.xPhase)) *
-          cssW
+          anchorW
         const cy =
           (b.y +
             b.yAmp *
               Math.sin(t * b.yFreq * DRIFT_SPEED * Math.PI * 2 + b.yPhase)) *
-          cssH
+          anchorH
         const r =
           b.r *
           minSide *
@@ -299,6 +314,7 @@ function useLavaField(
     }
 
     const loop = (timeMs: number) => {
+      lastTime = timeMs
       draw(timeMs)
       raf = requestAnimationFrame(loop)
     }
@@ -320,16 +336,21 @@ function useLavaField(
       raf = requestAnimationFrame(loop)
     }
 
+    // Viewport resize: re-snapshot the anchor (re-distributing the field is
+    // correct when the viewport itself changes) and redraw immediately so the
+    // resized backing store never paints a cleared frame.
     const onResize = () => {
       measure()
-      if (raf === 0) draw(0)
+      reAnchor()
+      draw(lastTime)
     }
     const onColorChange = () => {
       scrim = getComputedStyle(canvas).color
-      if (raf === 0) draw(0)
+      if (raf === 0) draw(lastTime)
     }
 
     measure()
+    reAnchor()
     start()
     scheduleReveal()
 
@@ -337,11 +358,13 @@ function useLavaField(
     document.addEventListener('visibilitychange', start)
     reduceMq.addEventListener('change', start)
 
-    // The container can grow/shrink (fonts, responsive reflow, content); keep
-    // the canvas sized to it.
+    // The container grows/shrinks on content reflow (e.g. expanding a
+    // collapsible). Keep the backing store and scrim covering it and redraw
+    // immediately, but DON'T re-anchor — the blobs must stay put when content
+    // reflows, only a viewport resize re-distributes them.
     const sizeObserver = new ResizeObserver(() => {
       measure()
-      if (raf === 0) draw(0)
+      draw(lastTime)
     })
     sizeObserver.observe(canvas)
 
