@@ -8,9 +8,7 @@ is persisted across visits and applied before first paint to avoid a flash of th
 wrong theme. Toggling animates as a circular reveal where supported, and all
 surfaces — including bespoke ones like the matrix background and company logo
 plates — adapt to the active theme.
-
 ## Requirements
-
 ### Requirement: First visit follows the operating-system colour preference
 
 On a visitor's first load, with no stored preference, the site SHALL render in the
@@ -79,9 +77,9 @@ in one theme and then visibly switch to another.
 
 When supported, toggling the theme SHALL animate as a soft-edged circular reveal of
 the new theme expanding from the toggle button, with a feathered (gradient) edge
-echoing the matrix hover spotlight. Where the View Transitions API is unavailable
-(e.g. Firefox) or the visitor prefers reduced motion, the theme SHALL change
-instantly with no animation.
+echoing the soft-edged reveals of the matrix background. Where the View Transitions
+API is unavailable (e.g. Firefox) or the visitor prefers reduced motion, the theme
+SHALL change instantly with no animation.
 
 #### Scenario: Reveal on a supporting browser
 
@@ -106,8 +104,9 @@ shadcn tokens. The bespoke surfaces SHALL be made theme-aware:
 
 - The matrix dot-grid background SHALL use a dot colour that reads correctly in
   both themes.
-- The cursor-follow spotlight overlay SHALL lighten the page periphery in light
-  mode and darken it in dark mode (not wash near-white in dark mode).
+- The overlay surrounding the drifting contrast blobs SHALL lighten the page
+  periphery in light mode and darken it in dark mode (not wash near-white in dark
+  mode).
 - Company logo plates SHALL keep a light (white) background in both themes so dark
   company marks stay legible against a dark page.
 
@@ -115,16 +114,5 @@ shadcn tokens. The bespoke surfaces SHALL be made theme-aware:
 
 - **WHEN** the site is in dark mode
 - **THEN** the matrix dot grid is visible against the dark background
-- **AND** the cursor-follow spotlight darkens the periphery rather than washing it
-  near-white
+- **AND** the area around the drifting blobs darkens rather than washing near-white
 
-#### Scenario: Company logos in dark mode
-
-- **WHEN** the site is in dark mode and the Experience section is shown
-- **THEN** each company logo sits on a light plate and its mark remains legible
-
-#### Scenario: Header logo in dark mode
-
-- **WHEN** the site is in dark mode
-- **THEN** the header "IF" logo inverts with the theme (light tile, dark mark)
-  without bespoke per-theme styling
