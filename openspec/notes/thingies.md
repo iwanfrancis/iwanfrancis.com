@@ -53,7 +53,9 @@ Name: **thingies** (deliberate spelling of "thingys"; route `/thingies`).
   during Change 1. (Landed at `JITTER = 5`.)
 - **Zoom** — wanted (instinct to pinch/zoom rather than scroll-zoom the page), but
   deferred to a **follow-up change** after `thingies-canvas`. It pairs with the
-  panning surface; design the transform so zoom slots in.
+  panning surface; design the transform so zoom slots in. → **Now the
+  `thingies-zoom` change** (scroll-to-zoom, trackpad swipe-pan + pinch-zoom via a
+  `@use-gesture` + DIY wheel split, focal-point anchoring, accessible +/- controls).
 
 ## Page anatomy — the layer cake
 
@@ -175,7 +177,10 @@ Two distinct mechanisms (often conflated):
   architecturally foundational.
 - **Mount-window (virtualise)** — only render tiles whose cell intersects
   (viewport + margin). Pan away → unmount → animation stops, memory frees. →
-  **deferred to Change 2**; only earns its keep at scale.
+  **deferred to Change 2**; only earns its keep at scale. **Co-design note (post
+  `thingies-zoom`):** the intersection test must be scale-aware — the visible
+  world rect is `viewport ÷ scale`, so zooming out widens it and mounts more
+  tiles. Zoom-out is exactly the case windowing exists for.
 - **Pause, don't just unmount** — freeze a tile's animation when off-screen
   before it unmounts, so panning never stutters. (Change 2.)
 
@@ -206,7 +211,10 @@ cells fall in this rect" — no heavy windowing lib needed.
   `pointer-events: none`; respects `prefers-reduced-motion`; wrapped in an error
   boundary so one broken tile can't blank the page. **Prefer SVG / CSS / 2D
   canvas; treat WebGL as the exception** — browsers cap live WebGL contexts
-  (~8–16), which windowing across many tiles would blow through.
+  (~8–16), which windowing across many tiles would blow through. **Now that the
+  surface zooms (`thingies-zoom`), prefer SVG / CSS over 2D canvas where you can:**
+  CSS scales SVG/CSS crisply, but a raster 2D-canvas tile blurs when zoomed past
+  ~2×. Acceptable for decorative tiles, but SVG/CSS reads sharper under zoom.
 
 ## Change breakdown — three changes, two capabilities
 

@@ -6,3 +6,29 @@ export const GUTTER = 2
 export const PITCH = TILE_SIZE + GUTTER
 /** Fixed seed for deterministic placement jitter. */
 export const SEED = 0x7a9e1c3d
+
+// --- Pan tunables ---------------------------------------------------------
+/** How far past the tiles' edge a visitor may overscroll, in px. */
+export const EDGE_MARGIN = 140
+/** Per-frame velocity decay during a fling. */
+export const FRICTION = 0.92
+/** Below this px/frame the fling stops. */
+export const MIN_VELOCITY = 0.25
+/** Converts @use-gesture drag velocity (px/ms) to the fling's px/frame. Tunable. */
+export const FLING_SPEED = 16
+
+// --- Zoom tunables (felt out in-browser, like JITTER) ---------------------
+/** Minimum zoom scale (zoomed out). */
+export const MIN_SCALE = 0.4
+/** Maximum zoom scale (zoomed in). */
+export const MAX_SCALE = 3
+/** Scale change per px of (normalised) wheel deltaY: factor = exp(-dy * this). */
+export const WHEEL_ZOOM_SPEED = 0.002
+/** Scale multiplier applied per +/- control or keyboard zoom step. */
+export const ZOOM_STEP = 1.3
+/** Duration of an animated (button/keyboard) zoom, in ms. */
+export const ZOOM_ANIM_MS = 200
+/** Idle gap (ms) after the last wheel event that ends a wheel "session". Within a
+ *  session the zoom-vs-pan mode is locked, so one continuous scroll can't flip
+ *  between zooming and panning mid-gesture. */
+export const WHEEL_SESSION_GAP = 140
