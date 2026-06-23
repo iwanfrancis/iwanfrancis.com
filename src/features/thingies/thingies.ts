@@ -1,0 +1,50 @@
+import type { ComponentType } from 'react'
+
+export type ThingyEntry = {
+  /** Stable id; also the folder name under `thingies/`. */
+  id: string
+  /** Short human name (not yet shown on the page — tiles float bare for now). */
+  title: string
+  /** ISO date the tile was added. */
+  date: string
+  /** Dynamic import of the tile's default-exported component, for code-splitting. */
+  load: () => Promise<{ default: ComponentType }>
+}
+
+/**
+ * The ordered list of tiles. Placement is derived from this order, so append new
+ * tiles to the END — inserting mid-list would reshuffle later tiles' positions.
+ * Each tile is its own chunk via the `load` dynamic import.
+ */
+export const thingies: ThingyEntry[] = [
+  {
+    id: '0001-concentric-rings',
+    title: 'Concentric rings',
+    date: '2026-06-22',
+    load: () => import('./thingies/0001-concentric-rings'),
+  },
+  {
+    id: '0002-nested-squares',
+    title: 'Nested squares',
+    date: '2026-06-22',
+    load: () => import('./thingies/0002-nested-squares'),
+  },
+  {
+    id: '0003-pulse-grid',
+    title: 'Pulse grid',
+    date: '2026-06-22',
+    load: () => import('./thingies/0003-pulse-grid'),
+  },
+  {
+    id: '0004-orbiting-dot',
+    title: 'Orbiting dot',
+    date: '2026-06-22',
+    load: () => import('./thingies/0004-orbiting-dot'),
+  },
+  {
+    id: '0005-wave-bars',
+    title: 'Wave bars',
+    date: '2026-06-22',
+    load: () => import('./thingies/0005-wave-bars'),
+  },
+]

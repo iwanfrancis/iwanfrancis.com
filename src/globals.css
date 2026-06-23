@@ -44,6 +44,17 @@
 
   --font-geist: var(--font-geist), sans-serif;
   --font-josefin: var(--font-josefin), sans-serif;
+
+  /* Fixed accent palette for thingies tiles, exposed as Tailwind colours
+     (text-thingy-*, bg-thingy-*, border-thingy-*). Deliberately muted (low
+     chroma, mid lightness) so the grid's intensity stays controlled as it
+     grows, and legible on both the light and dark page backgrounds. Shared
+     across themes for now. */
+  --color-thingy-amber: oklch(0.74 0.1 75);
+  --color-thingy-teal: oklch(0.7 0.08 190);
+  --color-thingy-blue: oklch(0.66 0.09 250);
+  --color-thingy-rose: oklch(0.68 0.1 15);
+  --color-thingy-violet: oklch(0.66 0.09 300);
 }
 
 :root {

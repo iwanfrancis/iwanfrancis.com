@@ -1,9 +1,6 @@
 import type { Metadata } from 'next'
 import { Geist, Josefin_Sans } from 'next/font/google'
 import '@/globals.css'
-import MatrixBackground from '@/components/layout/matrix-background/matrix-background'
-import Footer from '@/components/navigation/footer/footer'
-import Header from '@/components/navigation/header/header'
 import { cn } from '@/utils/cn'
 import AppProvider from './provider'
 
@@ -30,15 +27,7 @@ export default function RootLayout({
       <body
         className={cn(fontGeist.className, fontJosefin.variable, 'font-geist')}
       >
-        <AppProvider>
-          <div className="relative flex flex-col min-h-screen">
-            <Header />
-            <MatrixBackground className="flex-grow">
-              {children}
-            </MatrixBackground>
-            <Footer />
-          </div>
-        </AppProvider>
+        <AppProvider>{children}</AppProvider>
       </body>
     </html>
   )
