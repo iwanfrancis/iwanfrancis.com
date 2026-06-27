@@ -33,7 +33,7 @@ export const MIN_SCALE = 0.4
 /** Maximum zoom scale (zoomed in). */
 export const MAX_SCALE = 3
 /** Scale change per px of (normalised) wheel deltaY: factor = exp(-dy * this). */
-export const WHEEL_ZOOM_SPEED = 0.002
+export const WHEEL_ZOOM_SPEED = 0.008
 /** Scale multiplier applied per +/- control or keyboard zoom step. */
 export const ZOOM_STEP = 1.3
 /** Duration of an animated (button/keyboard) zoom, in ms. */
