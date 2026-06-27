@@ -1,4 +1,3 @@
-export const EMAIL = 'iwanfrancis@gmail.com'
 export const ADDRESSES = {
   VALVE_SPACE: 'https://valvespace.com',
   APADMI: 'https://apadmi.com',

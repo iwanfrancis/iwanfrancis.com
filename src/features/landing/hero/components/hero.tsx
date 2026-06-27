@@ -1,7 +1,8 @@
-import { Download, Github, Linkedin, Mail } from 'lucide-react'
+import { Download } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/inputs/button/button'
-import { EMAIL } from '@/config/constants'
+import SocialLinks from '@/components/navigation/social-links/social-links'
+import { siteConfig } from '@/config/site'
 
 function Hero() {
   return (
@@ -41,33 +42,10 @@ function Hero() {
         </Button>
       </div>
 
-      <div className="flex items-center gap-2 mt-4 p-2 bg-background">
-        <Button variant="ghost" size="icon" asChild className="h-8 w-8">
-          <a
-            href="https://github.com/iwanfrancis"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="GitHub"
-          >
-            <Github className="h-4 w-4" />
-          </a>
-        </Button>
-        <Button variant="ghost" size="icon" asChild className="h-8 w-8">
-          <a
-            href="https://www.linkedin.com/in/iwan-francis/"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="LinkedIn"
-          >
-            <Linkedin className="h-4 w-4" />
-          </a>
-        </Button>
-        <Button variant="ghost" size="icon" asChild className="h-8 w-8">
-          <a href={`mailto:${EMAIL}`} aria-label="Email">
-            <Mail className="h-4 w-4" />
-          </a>
-        </Button>
-      </div>
+      <SocialLinks
+        links={siteConfig.socials}
+        className="mt-4 p-2 bg-background"
+      />
     </section>
   )
 }

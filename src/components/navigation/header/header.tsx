@@ -4,15 +4,19 @@ import Link from 'next/link'
 import { type ReactNode, useEffect, useState } from 'react'
 import { Button } from '@/components/inputs/button/button'
 import Container from '@/components/layout/container/container'
-import Logo from '@/components/navigation/header/logo'
+import type { NavLink } from '@/config/site'
 import { cn } from '@/utils/cn'
 
 type HeaderProps = {
+  /** Brand mark rendered inside the homepage link. */
+  logo?: ReactNode
+  /** In-page nav links rendered between the logo and actions. */
+  links?: NavLink[]
   /** Slot for site-wide actions (e.g. the theme toggle), rendered after the nav links. */
   actions?: ReactNode
 }
 
-function Header({ actions }: HeaderProps) {
+function Header({ logo, links = [], actions }: HeaderProps) {
   const [isAtTop, setIsAtTop] = useState(true)
 
   useEffect(() => {
@@ -39,15 +43,14 @@ function Header({ actions }: HeaderProps) {
           aria-label="Iwan Francis - Go to homepage"
           className="rounded-md"
         >
-          <Logo />
+          {logo}
         </Link>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" className="text-md" asChild>
-            <Link href="/#hero">Home</Link>
-          </Button>
-          <Button variant="ghost" className="text-md" asChild>
-            <Link href="/#experience">Experience</Link>
-          </Button>
+          {links.map(({ label, href }) => (
+            <Button key={href} variant="ghost" className="text-md" asChild>
+              <Link href={href}>{label}</Link>
+            </Button>
+          ))}
           {actions}
         </div>
       </Container>

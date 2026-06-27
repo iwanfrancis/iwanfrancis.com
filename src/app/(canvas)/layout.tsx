@@ -1,4 +1,6 @@
 import Header from '@/components/navigation/header/header'
+import Logo from '@/components/navigation/header/logo'
+import { siteConfig } from '@/config/site'
 import ThemeToggleButton from '@/features/theme/components/theme-toggle-button'
 
 /**
@@ -13,7 +15,11 @@ export default function CanvasLayout({
 }>) {
   return (
     <div className="relative h-dvh overflow-hidden">
-      <Header actions={<ThemeToggleButton />} />
+      <Header
+        logo={<Logo />}
+        links={siteConfig.nav}
+        actions={<ThemeToggleButton />}
+      />
       {children}
     </div>
   )

@@ -1,6 +1,8 @@
 import MatrixBackground from '@/components/layout/matrix-background/matrix-background'
 import Footer from '@/components/navigation/footer/footer'
 import Header from '@/components/navigation/header/header'
+import Logo from '@/components/navigation/header/logo'
+import { siteConfig } from '@/config/site'
 import ThemeToggleButton from '@/features/theme/components/theme-toggle-button'
 
 /**
@@ -16,9 +18,13 @@ export default function SiteLayout({
 }>) {
   return (
     <div className="relative flex flex-col min-h-screen">
-      <Header actions={<ThemeToggleButton />} />
+      <Header
+        logo={<Logo />}
+        links={siteConfig.nav}
+        actions={<ThemeToggleButton />}
+      />
       <MatrixBackground className="grow">{children}</MatrixBackground>
-      <Footer actions={<ThemeToggleButton />} />
+      <Footer socials={siteConfig.socials} actions={<ThemeToggleButton />} />
     </div>
   )
 }
