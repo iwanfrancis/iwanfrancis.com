@@ -201,6 +201,17 @@
   background-position: top left;
 }
 
+/* A /thingies tile that has panned off-screen but is still mounted (within the
+   mount band, see thingy-canvas.tsx). Freezing its CSS animations stops it doing
+   unseen work; it resumes when panned back in, and fully unmounts further out.
+   animation-play-state isn't inherited, so the descendant selector is needed. */
+.thingy-frozen,
+.thingy-frozen * {
+  /* biome-ignore lint/complexity/noImportantStyles: must beat Tailwind's
+     animate-* utilities (equal specificity) regardless of stylesheet order. */
+  animation-play-state: paused !important;
+}
+
 /* Ambient "lava lamp" background (see matrix-background.tsx + use-lava-field.ts).
    A canvas sized to the matrix container lays a --matrix-overlay scrim over the
    dot matrix and punches soft, drifting holes in it to reveal the vivid dots.

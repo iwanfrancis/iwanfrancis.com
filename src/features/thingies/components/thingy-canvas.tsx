@@ -1,11 +1,17 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import LavaBackground from '@/components/layout/matrix-background/lava-background'
 import { PITCH, TILE_SIZE } from '../constants'
 import usePanZoom from '../hooks/use-pan-zoom'
 import { thingies } from '../thingies'
 import { placeTiles } from '../utils/place-tiles'
+import {
+  type Bands,
+  computeBands,
+  intersects,
+  type Viewport,
+} from '../utils/visible-band'
 import ThingyFrame from './thingy-frame'
 import ZoomControls from './zoom-controls'
 
@@ -13,6 +19,12 @@ import ZoomControls from './zoom-controls'
  *  as it pans, even at the minimum zoom. It's pure CSS background, so its size
  *  costs nothing. */
 const DOT_FIELD = 40000
+
+/** First-paint fallback viewport for the mount band — real dimensions arrive via
+ *  onViewport one frame after mount. Fixed (not read from `window`) so the server
+ *  and client first render mount the same tiles and hydration doesn't drift. */
+const INITIAL_VW = 1280
+const INITIAL_VH = 800
 
 /**
  * The /thingies surface. Three stacked layers in a fixed, viewport-filling
@@ -62,9 +74,31 @@ function ThingyCanvas() {
     }
   }, [])
 
+  // Which tiles to mount. Starts from a deterministic fallback band (SSR-safe),
+  // then the engine pushes the real viewport after mount. setBands keeps the same
+  // object when the cell band is unchanged, so a pan only re-renders on a band
+  // crossing — not every frame.
+  const [bands, setBands] = useState<Bands>(() =>
+    computeBands({
+      vw: INITIAL_VW,
+      vh: INITIAL_VH,
+      offsetX: 0,
+      offsetY: 0,
+      scale: 1,
+    })
+  )
+
+  const onViewport = useCallback((viewport: Viewport) => {
+    setBands((prev) => {
+      const next = computeBands(viewport)
+      return prev.key === next.key ? prev : next
+    })
+  }, [])
+
   const { containerRef, dotsRef, tilesRef, zoomIn, zoomOut } = usePanZoom({
     contentW: layout.contentW,
     contentH: layout.contentH,
+    onViewport,
   })
 
   return (
@@ -107,14 +141,17 @@ function ThingyCanvas() {
           willChange: 'transform',
         }}
       >
-        {layout.tiles.map((tile) => (
-          <ThingyFrame
-            key={tile.entry.id}
-            entry={tile.entry}
-            left={tile.left}
-            top={tile.top}
-          />
-        ))}
+        {layout.tiles
+          .filter((tile) => intersects(bands.mount, tile.left, tile.top))
+          .map((tile) => (
+            <ThingyFrame
+              key={tile.entry.id}
+              entry={tile.entry}
+              left={tile.left}
+              top={tile.top}
+              frozen={!intersects(bands.active, tile.left, tile.top)}
+            />
+          ))}
       </div>
       <ZoomControls onZoomIn={zoomIn} onZoomOut={zoomOut} />
     </div>

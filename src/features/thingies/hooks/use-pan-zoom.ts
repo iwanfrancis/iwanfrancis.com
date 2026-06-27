@@ -14,8 +14,15 @@ import {
   ZOOM_ANIM_MS,
   ZOOM_STEP,
 } from '../constants'
+import type { Viewport } from '../utils/visible-band'
 
-type Layout = { contentW: number; contentH: number }
+type UsePanZoomOptions = {
+  contentW: number
+  contentH: number
+  /** Notified (rAF-throttled) whenever the pan/zoom transform changes, so the
+   *  canvas can recompute which tiles to mount. */
+  onViewport?: (viewport: Viewport) => void
+}
 
 /** Imperative engine the gesture handlers and zoom buttons both drive. Held in
  *  a ref so the once-bound listeners and rAF loops always see the live state. */
@@ -62,13 +69,17 @@ const prefersReducedMotion = () =>
  * wheel is handled directly so mouse-wheel (zoom), trackpad swipe (pan), and
  * trackpad pinch (ctrl+wheel, zoom) can be split by hand.
  */
-function usePanZoom(layout: Layout) {
+function usePanZoom({ contentW, contentH, onViewport }: UsePanZoomOptions) {
   const containerRef = useRef<HTMLDivElement>(null)
   const dotsRef = useRef<HTMLDivElement>(null)
   const tilesRef = useRef<HTMLDivElement>(null)
 
-  const layoutRef = useRef(layout)
-  layoutRef.current = layout
+  const layoutRef = useRef({ contentW, contentH })
+  layoutRef.current = { contentW, contentH }
+
+  // Stored in a ref so the once-bound listeners and rAF loops call the live one.
+  const onViewportRef = useRef(onViewport)
+  onViewportRef.current = onViewport
 
   const engineRef = useRef<Engine | null>(null)
 
@@ -101,11 +112,33 @@ function usePanZoom(layout: Layout) {
     let scale = 1
     let flingRaf = 0
     let zoomRaf = 0
+    let viewportRaf = 0
+
+    // Tell the canvas the transform changed, coalesced to one call per frame so a
+    // 60fps pan doesn't fire 60 React updates — the canvas itself only re-renders
+    // when the resulting cell band actually changes.
+    const notifyViewport = () => {
+      viewportRaf = 0
+      onViewportRef.current?.({
+        vw: container.clientWidth,
+        vh: container.clientHeight,
+        offsetX: offset.x,
+        offsetY: offset.y,
+        scale,
+      })
+    }
+    const scheduleViewportNotify = () => {
+      if (viewportRaf) return
+      viewportRaf = requestAnimationFrame(notifyViewport)
+    }
 
     const applyTransform = () => {
       const t = `translate(${offset.x}px, ${offset.y}px) scale(${scale})`
       dots.style.transform = t
       tiles.style.transform = t
+      // Single chokepoint: every drag/wheel/pinch/fling/zoom/resize path ends
+      // here, so one notify hook-up covers them all.
+      scheduleViewportNotify()
     }
 
     const clampOffset = () => {
@@ -311,6 +344,7 @@ function usePanZoom(layout: Layout) {
     return () => {
       stopFling()
       stopZoomAnim()
+      if (viewportRaf) cancelAnimationFrame(viewportRaf)
       container.removeEventListener('wheel', onWheel)
       window.removeEventListener('keydown', onKeyDown)
       window.removeEventListener('resize', onResize)

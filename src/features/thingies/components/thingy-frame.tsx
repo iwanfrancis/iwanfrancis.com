@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic'
 import { useMemo } from 'react'
+import { cn } from '@/utils/cn'
 import { TILE_SIZE } from '../constants'
 import type { ThingyEntry } from '../thingies'
 import TileErrorBoundary from './tile-error-boundary'
@@ -11,6 +12,9 @@ type ThingyFrameProps = {
   /** Position within the tiles layer, in px (centre of the blob is at 0,0). */
   left: number
   top: number
+  /** True when the tile is mounted but off-screen: its animations are paused
+   *  (see the .thingy-frozen rule in globals.css) until it scrolls back in. */
+  frozen?: boolean
 }
 
 /**
@@ -25,7 +29,7 @@ type ThingyFrameProps = {
  * Content is client-only (`ssr: false`): tiles are decorative and often animate,
  * so there's nothing to gain from server rendering them.
  */
-function ThingyFrame({ entry, left, top }: ThingyFrameProps) {
+function ThingyFrame({ entry, left, top, frozen }: ThingyFrameProps) {
   const Content = useMemo(
     () => dynamic(entry.load, { ssr: false, loading: () => null }),
     [entry.load]
@@ -33,7 +37,10 @@ function ThingyFrame({ entry, left, top }: ThingyFrameProps) {
 
   return (
     <div
-      className="absolute overflow-hidden bg-background"
+      className={cn(
+        'absolute overflow-hidden bg-background',
+        frozen && 'thingy-frozen'
+      )}
       style={{ left, top, width: TILE_SIZE, height: TILE_SIZE }}
     >
       <div className="pointer-events-none h-full w-full">

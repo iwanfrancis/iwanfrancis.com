@@ -17,6 +17,16 @@ export const MIN_VELOCITY = 0.25
 /** Converts @use-gesture drag velocity (px/ms) to the fling's px/frame. Tunable. */
 export const FLING_SPEED = 16
 
+// --- Windowing tunables (world px; felt out in-browser, like JITTER) -------
+/** How far past the viewport a tile keeps animating. Inside this band tiles are
+ *  mounted AND active; just beyond it they freeze. A small hysteresis so tiles
+ *  at the very edge don't flicker between animating and frozen. */
+export const ACTIVE_MARGIN = 80
+/** How far past the viewport a tile stays mounted (frozen) before it unmounts.
+ *  Larger than ACTIVE_MARGIN so the frozen band absorbs fast pans and the actual
+ *  teardown happens well away from the visible edge — no unmount stutter. */
+export const MOUNT_MARGIN = 320
+
 // --- Zoom tunables (felt out in-browser, like JITTER) ---------------------
 /** Minimum zoom scale (zoomed out). */
 export const MIN_SCALE = 0.4
