@@ -1,4 +1,5 @@
 import Header from '@/components/navigation/header/header'
+import ThemeToggleButton from '@/features/theme/components/theme-toggle-button'
 
 /**
  * Full-bleed shell for pan-around canvas pages (e.g. /thingies): the header
@@ -12,7 +13,7 @@ export default function CanvasLayout({
 }>) {
   return (
     <div className="relative h-dvh overflow-hidden">
-      <Header />
+      <Header actions={<ThemeToggleButton />} />
       {children}
     </div>
   )

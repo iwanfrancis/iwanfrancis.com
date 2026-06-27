@@ -1,11 +1,16 @@
 import { Github, Linkedin, Mail } from 'lucide-react'
+import type { ReactNode } from 'react'
 import { Button } from '@/components/inputs/button/button'
 import Container from '@/components/layout/container/container'
 import { EMAIL } from '@/config/constants'
 import ScrollToTopButton from './scroll-to-top-button'
-import ThemeToggleButton from './theme-toggle-button'
 
-function Footer() {
+type FooterProps = {
+  /** Slot for site-wide actions (e.g. the theme toggle), rendered before scroll-to-top. */
+  actions?: ReactNode
+}
+
+function Footer({ actions }: FooterProps) {
   return (
     <footer className="bg-background p-2 md:p-6">
       <Container className="flex flex-row items-center gap-4 justify-center">
@@ -36,7 +41,7 @@ function Footer() {
               <Mail className="h-4 w-4" />
             </a>
           </Button>
-          <ThemeToggleButton />
+          {actions}
           <ScrollToTopButton />
         </div>
       </Container>

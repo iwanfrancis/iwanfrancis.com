@@ -1,7 +1,7 @@
 'use client'
 
-import { ThemeProvider } from 'next-themes'
 import type { ReactNode } from 'react'
+import ThemeProvider from '@/features/theme/components/theme-provider'
 
 type AppProviderProps = {
   children: ReactNode
@@ -13,16 +13,7 @@ type AppProviderProps = {
  * here as they're needed.
  */
 function AppProvider({ children }: AppProviderProps) {
-  return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
-      {children}
-    </ThemeProvider>
-  )
+  return <ThemeProvider>{children}</ThemeProvider>
 }
 
 export default AppProvider
