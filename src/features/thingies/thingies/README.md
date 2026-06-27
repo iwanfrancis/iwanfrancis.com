@@ -1,0 +1,88 @@
+# Tile contract
+
+Each folder here is one **thingy** — a small, self-contained visual experiment that
+draws inside a fixed square on the `/thingies` canvas. This file is the canonical
+contract: what a tile must satisfy. The `add-a-thingy` skill scaffolds a tile that
+already meets it; if you hand-author one, follow this.
+
+> Fastest path: run the **`add-a-thingy`** skill. It picks the next id, scaffolds a
+> contract-conforming `index.tsx`, and registers the tile for you. You then just
+> write the drawing.
+
+## What a tile must do
+
+- **Self-contained in source — but libraries are welcome.** Don't import from
+  other tiles, other features, or app code; a tile stands alone in its folder. You
+  *may* add a third-party library to experiment with (`yarn add` it). Import it at
+  the top of your tile file: each tile is already code-split into its own chunk
+  (the registry `load`s it dynamically) and only mounts when on-screen, so the
+  library rides in that lazy chunk and never weighs on the initial page or the
+  other tiles. For a very heavy library, defer it further with an in-component
+  dynamic import. Two caveats carry over: a library that runs its own
+  JS / `requestAnimationFrame` loop won't be frozen off-screen (only CSS animation
+  is — see below), and a WebGL library is still subject to the browser's
+  live-context cap, so use those sparingly.
+- **Default-export one component.** The registry loads the tile via
+  `() => import('./thingies/<id>')`, so the component must be the file's
+  `export default`. No props — it renders itself.
+- **Fill the square.** The frame is a fixed square that clips overflow. Fill it
+  with `h-full w-full` (or an SVG that does). See *scale-independent* below for
+  sizing what's inside.
+- **Be scale-independent.** A tile must look identical at any size. The square is
+  `TILE_SIZE` (currently 100px), but that may change, and the canvas also zooms —
+  so drive all geometry from the tile box, never from fixed pixels. Best: an SVG
+  `viewBox` (e.g. `0 0 100 100`), which scales perfectly. Otherwise use percentages
+  or fractions of `h-full w-full`. Avoid fixed-px sizing (Tailwind `h-2`, `gap-1.5`,
+  `p-4`, …) for anything structural — it freezes at today's size and breaks if the
+  tile size changes.
+- **Be decorative and non-interactive.** The frame already renders content with
+  `pointer-events: none`, so a tile can never capture a drag. Don't add click /
+  hover / focus handlers or focusable elements. For SVG, set `aria-hidden="true"`.
+- **Honour `prefers-reduced-motion`.** Gate every animation behind Tailwind's
+  `motion-safe:` variant (e.g. `motion-safe:animate-pulse`). A reduced-motion
+  visitor must see a sensible static result, never continuous motion.
+- **Prefer CSS animation over JS.** Off-screen tiles are frozen by pausing CSS
+  `animation-play-state` (the `.thingy-frozen` rule). A `requestAnimationFrame` or
+  canvas draw loop is **not** frozen by that and keeps doing unseen work — so
+  animate with CSS / Tailwind `animate-*` wherever possible.
+- **Prefer SVG / CSS over 2D canvas; treat WebGL as the exception.** SVG and CSS
+  stay crisp under zoom and freeze cleanly; a raster 2D canvas blurs past ~2× zoom,
+  and browsers cap live WebGL contexts (~8–16), which windowing across many tiles
+  would blow through.
+
+## Colour: the fixed palette only
+
+If a tile uses accent colour it must come from the shared palette — never an
+arbitrary value. Tiles may also be monochrome. Set the colour once with a
+`text-thingy-*` class and derive fills/strokes/borders from `currentColor`
+(`fill="currentColor"`, `bg-current`, `border-current`):
+
+| Class               | Colour |
+| ------------------- | ------ |
+| `text-thingy-amber`  | amber  |
+| `text-thingy-teal`   | teal   |
+| `text-thingy-blue`   | blue   |
+| `text-thingy-rose`   | rose   |
+| `text-thingy-violet` | violet |
+
+The palette is defined once in [`src/globals.css`](../../../globals.css) (the
+`--color-thingy-*` tokens) and is also exposed as `bg-thingy-*` / `border-thingy-*`.
+Add a colour there and it's available to every tile.
+
+## Id & registration convention
+
+The registry — [`../thingies.ts`](../thingies.ts) — is an **append-only, ordered**
+list. Placement on the canvas is derived from list order, so the order is load
+bearing.
+
+- **Id format:** `NNNN-kebab-name` — a four-digit, zero-padded, sequential number
+  then a kebab-case name (e.g. `0006-spinning-glyph`). Ids are unique.
+- **Folder = id = entry id.** The folder name here equals the id, which equals the
+  `id` field of the registry entry.
+- **Always append, never insert.** A new tile's number is the current highest `+ 1`,
+  and its entry goes at the **end** of the array. Inserting mid-list or reordering
+  would reshuffle every later tile's position on the canvas — never do it.
+- **Entry shape:** `{ id, title, date, load }` where `date` is the ISO date added
+  and `load` is `() => import('./thingies/<id>')`.
+
+Tiles still float bare on the page — `title` and `date` are metadata, not yet shown.

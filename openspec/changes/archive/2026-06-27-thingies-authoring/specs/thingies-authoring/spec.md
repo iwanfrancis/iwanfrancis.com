@@ -1,0 +1,152 @@
+## ADDED Requirements
+
+### Requirement: Adding a tile is an append-only operation
+
+A new tile SHALL be added by appending exactly one entry to the end of the ordered
+tile registry and creating that tile's component; the operation SHALL NOT modify,
+reorder, or remove any existing registry entry or tile. This preserves the
+deterministic, stable placement guaranteed by the canvas (appending never moves an
+already-placed tile).
+
+#### Scenario: Appending leaves existing tiles untouched
+
+- **WHEN** a new tile is added
+- **THEN** a single new entry is appended after the last existing registry entry
+- **AND** every existing entry keeps its id, metadata, and order
+
+#### Scenario: Tiles are never inserted mid-list
+
+- **WHEN** a tile is added
+- **THEN** it is placed last in the registry, never inserted before an existing
+  entry (which would reshuffle later tiles' positions)
+
+### Requirement: Tile ids follow a sequential, kebab-case convention
+
+Every tile SHALL have an id of the form `NNNN-kebab-name`: a four-digit,
+zero-padded, sequential integer prefix followed by a kebab-case name. The id SHALL
+be unique across all tiles, the new id's number SHALL be one greater than the
+highest existing tile number, and the tile's folder name SHALL equal its id and
+match the `id` field in its registry entry.
+
+#### Scenario: Next id continues the sequence
+
+- **WHEN** the highest existing tile is `0005-wave-bars`
+- **THEN** the next tile's id begins `0006-`
+
+#### Scenario: Id, folder, and registry entry agree
+
+- **WHEN** a tile exists
+- **THEN** its folder under the tiles directory is named exactly its id
+- **AND** the `id` field of its registry entry equals that folder name
+
+#### Scenario: Ids do not collide
+
+- **WHEN** a new tile is added
+- **THEN** its id does not duplicate any existing tile's id
+
+### Requirement: A canonical tile-contract document is the single source of truth
+
+The project SHALL provide one tile-contract document, colocated with the thingies
+feature, that enumerates every guarantee a tile must satisfy: self-contained from
+other tiles / features / app code (third-party libraries permitted when imported
+within the tile, so they are lazy-loaded with it), scale-independent so it looks
+the same at any tile size, fills a fixed square, decorative and non-interactive,
+honours `prefers-reduced-motion`, uses only the fixed accent palette (or is
+monochrome), default-exports the component the registry loads, and prefers SVG /
+CSS over 2D canvas (with WebGL the exception). The authoring tool and any
+hand-author SHALL follow this document, and a change to the contract SHALL be made
+in this one place.
+
+#### Scenario: The contract is documented in one place
+
+- **WHEN** an author needs to know what a tile must satisfy
+- **THEN** a single tile-contract document states the full contract
+- **AND** no competing, separate definition of the contract exists
+
+#### Scenario: The contract covers each guarantee
+
+- **WHEN** the contract document is read
+- **THEN** it lists, at minimum: scale-independence, the contained-and-lazy
+  dependency allowance, decorative / non-interactive, reduced-motion-safe, fills the
+  square, palette-only colour, default export, and the prefer-SVG/CSS-over-canvas
+  guidance
+
+### Requirement: Tile contents are scale-independent
+
+A tile SHALL render the same at any tile size: its appearance SHALL NOT depend on
+the current tile size. Tile geometry SHALL be expressed relative to the tile box —
+via an SVG `viewBox` or units relative to the tile's width and height — and SHALL
+NOT be hard-coded to fixed pixel dimensions tied to the current size. Changing the
+tile size, or zooming, SHALL rescale a tile uniformly rather than altering its
+composition.
+
+#### Scenario: Changing the tile size preserves appearance
+
+- **WHEN** the tile size is changed
+- **THEN** every tile keeps the same composition, scaled to the new size
+- **AND** no tile's contents are clipped, mis-aligned, or otherwise altered beyond a
+  uniform scale
+
+### Requirement: A tile may use contained, lazy-loaded dependencies
+
+A tile MAY use third-party libraries. Any such dependency SHALL be imported within
+the tile's own module so it is code-split into that tile's lazy-loaded chunk — which
+loads only when the tile is on screen — and SHALL NOT affect the initial page load
+or any other tile. A tile SHALL NOT import from other tiles, other features, or app
+code. A library that runs its own animation loop or uses WebGL remains subject to
+the off-screen-freeze and live-context caveats and SHALL be used accordingly.
+
+#### Scenario: A library rides in the tile's own chunk
+
+- **WHEN** a tile imports a third-party library within its module
+- **THEN** that library is bundled into the tile's on-demand chunk
+- **AND** the initial page bundle and the other tiles are unaffected
+
+#### Scenario: A tile does not reach across the app
+
+- **WHEN** a tile is authored
+- **THEN** it does not import from other tiles, other features, or app code
+
+### Requirement: An authoring tool scaffolds a new tile and registers it
+
+The project SHALL provide an authoring tool (a Claude Code skill) that adds a tile
+end to end with no manual id arithmetic or registry editing: it SHALL determine the
+next sequential id, create the tile folder and an `index.tsx` from a
+contract-conforming template, and append the matching entry to the registry. The
+author SHALL only have to write the tile's drawing inside the scaffolded component.
+
+#### Scenario: Running the tool scaffolds and registers a tile
+
+- **WHEN** the author runs the tool with a tile name
+- **THEN** a new tile folder and `index.tsx` are created under the tiles directory
+- **AND** a matching registry entry (id, title, date, loader) is appended
+
+#### Scenario: The author only writes the drawing
+
+- **WHEN** the tool has finished scaffolding
+- **THEN** the boilerplate (folder, default-exported component shell, registry
+  wiring) already exists
+- **AND** the only remaining work is the tile's visual content
+
+### Requirement: Scaffolded tiles conform to the contract by default
+
+The template the tool produces SHALL satisfy the tile contract out of the box,
+before any authoring: the scaffolded component SHALL be decorative and
+non-interactive, SHALL gate any animation behind `prefers-reduced-motion` so a
+reduced-motion visitor sees a static result, SHALL fill its square, SHALL be
+scale-independent (the template uses an SVG `viewBox`), SHALL draw accent colour
+only from the fixed palette, and SHALL be the default export the registry loader
+imports.
+
+#### Scenario: A freshly scaffolded tile is reduced-motion-safe
+
+- **WHEN** a tile is scaffolded and rendered for a visitor with
+  `prefers-reduced-motion: reduce`
+- **THEN** it shows a static result and runs no continuous animation
+
+#### Scenario: A freshly scaffolded tile is decorative and importable
+
+- **WHEN** a tile is scaffolded
+- **THEN** its component is non-interactive and marked decorative
+- **AND** it is the default export, so the registry's `load` import resolves it
+  without changes

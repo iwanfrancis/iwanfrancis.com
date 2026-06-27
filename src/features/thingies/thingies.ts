@@ -15,6 +15,9 @@ export type ThingyEntry = {
  * The ordered list of tiles. Placement is derived from this order, so append new
  * tiles to the END — inserting mid-list would reshuffle later tiles' positions.
  * Each tile is its own chunk via the `load` dynamic import.
+ *
+ * To add a tile, run the `add-a-thingy` skill (it scaffolds + registers one for
+ * you). The tile contract and id convention live in ./thingies/README.md.
  */
 export const thingies: ThingyEntry[] = [
   {
@@ -46,5 +49,11 @@ export const thingies: ThingyEntry[] = [
     title: 'Wave bars',
     date: '2026-06-22',
     load: () => import('./thingies/0005-wave-bars'),
+  },
+  {
+    id: '0006-rotating-arc',
+    title: 'Rotating arc',
+    date: '2026-06-27',
+    load: () => import('./thingies/0006-rotating-arc'),
   },
 ]
