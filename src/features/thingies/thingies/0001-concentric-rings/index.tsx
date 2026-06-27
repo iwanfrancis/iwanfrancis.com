@@ -6,7 +6,7 @@ export default function ConcentricRings() {
   return (
     <svg
       viewBox="0 0 100 100"
-      className="h-full w-full text-thingy-teal"
+      className="h-full w-full text-foreground"
       aria-hidden="true"
     >
       <title>Concentric rings</title>
@@ -18,7 +18,7 @@ export default function ConcentricRings() {
           r={r}
           fill="none"
           stroke="currentColor"
-          strokeWidth="1.5"
+          strokeWidth="3.5"
           className="motion-safe:animate-pulse"
           style={{
             transformOrigin: 'center',

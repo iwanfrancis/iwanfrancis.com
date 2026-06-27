@@ -23,7 +23,7 @@ export default function WaveBars() {
   return (
     <svg
       viewBox="0 0 100 100"
-      className="h-full w-full text-thingy-violet"
+      className="h-full w-full text-foreground"
       aria-hidden="true"
     >
       {BARS.map((bar, i) => {

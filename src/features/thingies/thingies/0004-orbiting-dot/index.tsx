@@ -1,20 +1,51 @@
 /**
- * A dot orbiting a faint ring, with a still dot at the centre. Decorative; the
- * orbit is gated behind motion-safe.
+ * A rose dot orbiting a faint ink ring, with a still rose dot at the centre — an
+ * ink drawing with a single colour accent (the reference for the tile contract's
+ * "minority accent" rule). Decorative; the orbit is gated behind motion-safe, so
+ * reduced-motion visitors see the dot parked on the ring.
  */
 export default function OrbitingDot() {
   return (
-    <div className="grid h-full w-full place-items-center text-thingy-rose">
-      <div className="relative h-[58%] w-[58%]">
-        <div className="absolute inset-0 rounded-full border border-current/40" />
-        <span className="-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 h-[10%] w-[10%] rounded-full bg-current" />
-        <div
-          className="absolute inset-0 motion-safe:animate-spin"
-          style={{ animationDuration: '6s' }}
-        >
-          <span className="-translate-x-1/2 absolute top-0 left-1/2 h-[14%] w-[14%] rounded-full bg-current" />
-        </div>
-      </div>
-    </div>
+    <svg
+      viewBox="0 0 100 100"
+      className="h-full w-full text-foreground"
+      aria-hidden="true"
+    >
+      {/* faint ink track */}
+      <circle
+        cx="50"
+        cy="50"
+        r="29"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="3"
+        opacity="0.25"
+      />
+      {/* still centre dot — rose accent */}
+      <circle
+        cx="50"
+        cy="50"
+        r="5"
+        className="text-thingy-rose"
+        fill="currentColor"
+      />
+      {/* orbiting dot — rose accent; rotates about the viewBox centre */}
+      <g
+        className="motion-safe:animate-spin"
+        style={{
+          transformBox: 'view-box',
+          transformOrigin: 'center',
+          animationDuration: '6s',
+        }}
+      >
+        <circle
+          cx="50"
+          cy="21"
+          r="7"
+          className="text-thingy-rose"
+          fill="currentColor"
+        />
+      </g>
+    </svg>
   )
 }

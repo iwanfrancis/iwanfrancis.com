@@ -45,15 +45,21 @@
   --font-geist: var(--font-geist), sans-serif;
   --font-josefin: var(--font-josefin), sans-serif;
 
-  /* Fixed accent palette for thingies tiles, exposed as Tailwind colours
-     (text-thingy-*, bg-thingy-*, border-thingy-*). Deliberately muted (low
-     chroma, mid lightness) so the grid's intensity stays controlled as it
-     grows, and legible on both the light and dark page backgrounds. Shared
-     across themes for now. */
-  --color-thingy-amber: oklch(0.74 0.1 75);
-  --color-thingy-teal: oklch(0.7 0.08 190);
+  /* Accent palette for thingies tiles, exposed as Tailwind colours
+     (text-thingy-*, bg-thingy-*, border-thingy-*). Tiles are drawn in
+     foreground ink by default; these are an OPTIONAL, minority accent — a pop
+     within an ink drawing, never a whole-tile colour. Deliberately muted (low
+     chroma, mid lightness) so the grid stays calm as it grows, and legible on
+     both the light and dark page backgrounds. Shared across themes for now.
+     Tiered: blue + rose are the primary accents (prefer these); amber, teal,
+     and violet are rare — reach for them deliberately. Tile contract:
+     src/features/thingies/thingies/README.md. */
+  /* Primary accents — prefer these. */
   --color-thingy-blue: oklch(0.66 0.09 250);
   --color-thingy-rose: oklch(0.68 0.1 15);
+  /* Rare accents — use deliberately. */
+  --color-thingy-amber: oklch(0.74 0.1 75);
+  --color-thingy-teal: oklch(0.7 0.08 190);
   --color-thingy-violet: oklch(0.66 0.09 300);
 }
 

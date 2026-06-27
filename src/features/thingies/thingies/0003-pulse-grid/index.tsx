@@ -6,14 +6,14 @@ const CELLS = Array.from({ length: 25 }, (_, i) => i)
 
 export default function PulseGrid() {
   return (
-    <div className="grid h-full w-full grid-cols-5 grid-rows-5 place-items-center p-3 text-thingy-blue">
+    <div className="grid h-full w-full grid-cols-5 grid-rows-5 place-items-center p-[8%] text-foreground">
       {CELLS.map((i) => {
         const col = i % 5
         const row = Math.floor(i / 5)
         return (
           <span
             key={i}
-            className="block h-1.5 w-1.5 rounded-full bg-current motion-safe:animate-pulse"
+            className="block aspect-square w-[45%] rounded-full bg-current motion-safe:animate-pulse"
             style={{
               animationDuration: '2.4s',
               animationDelay: `${(col + row) * 0.14}s`,

@@ -15,9 +15,10 @@ The tile contract and id convention are canonical in
 **Do not restate the contract; follow it.** The registry is
 [`src/features/thingies/thingies.ts`](../../../src/features/thingies/thingies.ts).
 
-**Input**: the tile's name (e.g. "spinning glyph"). Optionally a palette colour
-(`amber` | `teal` | `blue` | `rose` | `violet`) and a one-line idea of what it
-draws. If no name is given, ask for one.
+**Input**: the tile's name (e.g. "spinning glyph"). Optionally a one-line idea of
+what it draws, and — only if the tile wants a colour pop — an accent (`blue` /
+`rose` preferred; `amber` / `teal` / `violet` rare). Tiles default to ink and most
+use no accent at all. If no name is given, ask for one.
 
 ## Steps
 
@@ -39,10 +40,11 @@ draws. If no name is given, ask for one.
 ### 3. Scaffold the tile
 
 Create `src/features/thingies/thingies/NNNN-<slug>/index.tsx` from this template,
-substituting `{{ComponentName}}`, `{{Title}}`, and the palette colour
-(default `blue`). It is a contract-conforming starter — decorative, `aria-hidden`,
-fills the square, palette colour via `currentColor`, motion gated behind
-`motion-safe:`. The author replaces the drawing inside.
+substituting `{{ComponentName}}` and `{{Title}}`. It is a contract-conforming
+starter — decorative, `aria-hidden`, fills the square, drawn in **foreground ink**
+(`text-foreground` + `currentColor`) with a confident stroke, motion gated behind
+`motion-safe:`. The author replaces the drawing inside, and adds a palette accent
+only if the tile wants a colour pop.
 
 ```tsx
 /**
@@ -54,33 +56,40 @@ export default function {{ComponentName}}() {
   return (
     <svg
       viewBox="0 0 100 100"
-      className="h-full w-full text-thingy-blue"
+      className="h-full w-full text-foreground"
       aria-hidden="true"
     >
-      {/* TODO: replace with your drawing. Use currentColor for the palette colour,
-          relative coords (0–100), and motion-safe: for any animation. */}
+      {/* TODO: replace with your drawing. Default to ink (text-foreground via
+          currentColor), confident strokes (~3–5 units) or filled shapes — no 1px
+          hairlines. Use relative coords (0–100) and motion-safe: for animation. */}
       <circle
         cx="50"
         cy="50"
         r="24"
         fill="none"
         stroke="currentColor"
-        strokeWidth="2"
+        strokeWidth="4"
         className="motion-safe:animate-pulse"
         style={{ transformOrigin: 'center', animationDuration: '3s' }}
       />
+      {/* Optional accent pop — only if the tile wants colour. Keep it a minority of
+          the drawing (blue/rose preferred), e.g.:
+          <circle cx="50" cy="50" r="7" className="text-thingy-rose" fill="currentColor" /> */}
     </svg>
   )
 }
 ```
 
-Prefer SVG / CSS animation as above. If the idea genuinely needs a `<div>` layout
-instead (like `0004-orbiting-dot` / `0005-wave-bars`), that's fine — keep every
-contract guarantee (fills the square, **scale-independent: size via `viewBox` /
-percentages, not fixed px**, `motion-safe:`, palette via `bg-current` /
-`border-current`, no interactivity). Avoid JS/`requestAnimationFrame`/canvas loops:
-off-screen tiles freeze by pausing **CSS** animations only, so a JS loop keeps
-running unseen (see the README).
+Prefer SVG / CSS animation as above. Draw in **ink by default** — a tile with no
+palette colour is the norm; add an accent only as a minority pop (blue/rose
+preferred), never a whole-tile colour. Keep lines confident: no 1px hairlines, and
+never a Tailwind `border` for structural lines (it's a hairline and doesn't scale).
+If the idea genuinely needs a `<div>` layout instead (like `0004-orbiting-dot` /
+`0005-wave-bars`), that's fine — keep every contract guarantee (fills the square,
+**scale-independent: size via `viewBox` / percentages, not fixed px**, `motion-safe:`,
+colour via `bg-current` / `border-current`, no interactivity). Avoid
+JS/`requestAnimationFrame`/canvas loops: off-screen tiles freeze by pausing **CSS**
+animations only, so a JS loop keeps running unseen (see the README).
 
 Libraries are welcome for experiments — `yarn add` one and import it in the tile
 file; it rides in the tile's own lazy chunk. Mind bundle size and the JS-loop /

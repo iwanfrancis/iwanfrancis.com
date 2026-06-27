@@ -49,21 +49,34 @@ already meets it; if you hand-author one, follow this.
   stay crisp under zoom and freeze cleanly; a raster 2D canvas blurs past ~2× zoom,
   and browsers cap live WebGL contexts (~8–16), which windowing across many tiles
   would blow through.
+- **Avoid hairlines — no wireframey 1px lines.** Prefer filled shapes; when you
+  stroke, make it a confident, tile-scaled mark (roughly **3–5 units** in a
+  `0 0 100 100` viewBox). Don't build structural lines from a Tailwind `border`
+  (it's a 1px hairline *and* it doesn't scale with the tile — use SVG strokes or
+  filled shapes instead) or from ~1px viewBox strokes. A thin line is fine only when
+  a fine line is deliberately the point of the tile.
 
-## Colour: the fixed palette only
+## Colour: ink by default, palette as a minority accent
 
-If a tile uses accent colour it must come from the shared palette — never an
-arbitrary value. Tiles may also be monochrome. Set the colour once with a
-`text-thingy-*` class and derive fills/strokes/borders from `currentColor`
-(`fill="currentColor"`, `bg-current`, `border-current`):
+**Default to ink.** A tile is drawn in the site foreground ink — set
+`text-foreground` on the root and derive every fill/stroke/border from
+`currentColor` (`fill="currentColor"`, `bg-current`, `border-current`). An ink-only
+tile is the norm and fully conforms; most tiles use no palette colour at all. This
+keeps the canvas a calm, consistent field as it grows, rather than a rainbow.
 
-| Class               | Colour |
-| ------------------- | ------ |
-| `text-thingy-amber`  | amber  |
-| `text-thingy-teal`   | teal   |
-| `text-thingy-blue`   | blue   |
-| `text-thingy-rose`   | rose   |
-| `text-thingy-violet` | violet |
+**Accent is optional and a minority.** A tile *may* add a palette colour, but only
+as a small pop — a focal dot, a leading bar, a sweep — by setting `text-thingy-*` on
+that one element so its `currentColor` becomes the accent. A tile is **never** drawn
+wholly in one accent colour. `0004-orbiting-dot` is the reference: an ink ring with a
+single rose dot.
+
+**The palette is tiered** — prefer the primary accents, reach for the rare ones only
+deliberately:
+
+| Tier    | Class                                       | Colour            |
+| ------- | ------------------------------------------- | ----------------- |
+| Primary | `text-thingy-blue`, `text-thingy-rose`      | blue, rose        |
+| Rare    | `text-thingy-amber`, `text-thingy-teal`, `text-thingy-violet` | amber, teal, violet |
 
 The palette is defined once in [`src/globals.css`](../../../globals.css) (the
 `--color-thingy-*` tokens) and is also exposed as `bg-thingy-*` / `border-thingy-*`.

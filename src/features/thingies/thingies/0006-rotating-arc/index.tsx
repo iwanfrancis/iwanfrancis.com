@@ -6,7 +6,7 @@ export default function RotatingArc() {
   return (
     <svg
       viewBox="0 0 100 100"
-      className="h-full w-full text-thingy-amber"
+      className="h-full w-full text-foreground"
       aria-hidden="true"
     >
       <circle
@@ -15,7 +15,7 @@ export default function RotatingArc() {
         r="30"
         fill="none"
         stroke="currentColor"
-        strokeWidth="2"
+        strokeWidth="4"
         opacity="0.2"
       />
       <circle
@@ -24,10 +24,10 @@ export default function RotatingArc() {
         r="30"
         fill="none"
         stroke="currentColor"
-        strokeWidth="2"
+        strokeWidth="4"
         strokeLinecap="round"
         strokeDasharray="47 141"
-        className="motion-safe:animate-spin"
+        className="text-thingy-blue motion-safe:animate-spin"
         style={{ transformOrigin: 'center', animationDuration: '4s' }}
       />
     </svg>
