@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic'
 import { useMemo } from 'react'
 import { cn } from '@/utils/cn'
 import { TILE_SIZE } from '../constants'
+import { ThingyActiveProvider } from '../hooks/use-thingy-active'
 import type { ThingyEntry } from '../thingies'
 import TileErrorBoundary from './tile-error-boundary'
 
@@ -45,7 +46,9 @@ function ThingyFrame({ entry, left, top, frozen }: ThingyFrameProps) {
     >
       <div className="pointer-events-none h-full w-full">
         <TileErrorBoundary>
-          <Content />
+          <ThingyActiveProvider active={!frozen}>
+            <Content />
+          </ThingyActiveProvider>
         </TileErrorBoundary>
       </div>
     </div>

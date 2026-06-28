@@ -12,16 +12,19 @@ already meets it; if you hand-author one, follow this.
 ## What a tile must do
 
 - **Self-contained in source — but libraries are welcome.** Don't import from
-  other tiles, other features, or app code; a tile stands alone in its folder. You
+  other tiles, other features, or app code; a tile stands alone in its folder. (The
+  one sanctioned cross-folder import is the thingies runtime loop hooks — the
+  harness API, covered in *Running a JS loop* below.) You
   *may* add a third-party library to experiment with (`yarn add` it). Import it at
   the top of your tile file: each tile is already code-split into its own chunk
   (the registry `load`s it dynamically) and only mounts when on-screen, so the
   library rides in that lazy chunk and never weighs on the initial page or the
   other tiles. For a very heavy library, defer it further with an in-component
   dynamic import. Two caveats carry over: a library that runs its own
-  JS / `requestAnimationFrame` loop won't be frozen off-screen (only CSS animation
-  is — see below), and a WebGL library is still subject to the browser's
-  live-context cap, so use those sparingly.
+  JS / `requestAnimationFrame` loop is only frozen off-screen if you drive or gate
+  it through the runtime loop hooks (see below) — a loop left to run on its own
+  keeps working unseen until the tile unmounts; and a WebGL library is still
+  subject to the browser's live-context cap, so use those sparingly.
 - **Default-export one component.** The registry loads the tile via
   `() => import('./thingies/<id>')`, so the component must be the file's
   `export default`. No props — it renders itself.
@@ -41,10 +44,14 @@ already meets it; if you hand-author one, follow this.
 - **Honour `prefers-reduced-motion`.** Gate every animation behind Tailwind's
   `motion-safe:` variant (e.g. `motion-safe:animate-pulse`). A reduced-motion
   visitor must see a sensible static result, never continuous motion.
-- **Prefer CSS animation over JS.** Off-screen tiles are frozen by pausing CSS
-  `animation-play-state` (the `.thingy-frozen` rule). A `requestAnimationFrame` or
-  canvas draw loop is **not** frozen by that and keeps doing unseen work — so
-  animate with CSS / Tailwind `animate-*` wherever possible.
+- **CSS animation freezes for free; a JS loop needs the hooks.** Off-screen tiles
+  are frozen by pausing CSS `animation-play-state` (the `.thingy-frozen` rule), so
+  CSS / Tailwind `animate-*` freezes with zero effort — prefer it for simple motion.
+  When a tile needs a real JavaScript loop (a simulation, a game), drive it through
+  the runtime loop hooks so it freezes off-screen too — see *Running a JS loop*
+  below. A raw `requestAnimationFrame` / `setInterval` / canvas draw loop that isn't
+  wired through the hooks is **not** frozen and keeps doing unseen work until the
+  tile unmounts.
 - **Prefer SVG / CSS over 2D canvas; treat WebGL as the exception.** SVG and CSS
   stay crisp under zoom and freeze cleanly; a raster 2D canvas blurs past ~2× zoom,
   and browsers cap live WebGL contexts (~8–16), which windowing across many tiles
@@ -55,6 +62,33 @@ already meets it; if you hand-author one, follow this.
   (it's a 1px hairline *and* it doesn't scale with the tile — use SVG strokes or
   filled shapes instead) or from ~1px viewBox strokes. A thin line is fine only when
   a fine line is deliberately the point of the tile.
+
+## Running a JS loop
+
+Most tiles animate with CSS and need nothing here. When a tile needs a real
+JavaScript loop — a simulation, a game like `0007-snake`, a physics toy — use the
+**thingies runtime hooks** so the loop freezes off-screen in step with the CSS
+freeze. They live in `../../hooks/` and are the one sanctioned cross-folder import
+for a tile (they're the harness, not another tile):
+
+- **`useThingyFrame((deltaMs) => { … })`** — a `requestAnimationFrame` loop for
+  continuous motion. Your callback runs only while the tile is on-screen and the tab
+  is visible; `deltaMs` is the time since the last real tick (clamped), so a tile
+  resumes after a freeze with a normal step, never a jump.
+- **`useThingyInterval(() => { … }, ms)`** — a fixed-cadence clock (e.g. "advance
+  one cell every 180 ms"). Fires only while active; suspends off-screen and resumes
+  with no catch-up burst. The natural fit for a grid game.
+- **`useThingyActive(): boolean`** — the raw primitive both wrap. Use it directly
+  when your loop doesn't fit the two shapes above (a third-party engine you must
+  `.start()` / `.stop()`, a Web Worker): read it and stop your own work when it is
+  `false`. With the primitive, freezing is **your** responsibility.
+
+All three honour `prefers-reduced-motion` (the two convenience hooks simply don't
+tick; with the primitive, gate your loop yourself, and show a sensible static
+result). Tile state lives in the component and is preserved across a freeze, but a
+tile panned far enough off-screen unmounts and starts fresh on return — don't rely
+on long-term persistence. Anything not wired through these hooks will not freeze and
+keeps running unseen until the tile unmounts: bounded waste, but waste.
 
 ## Colour: ink by default, palette as a minority accent
 
