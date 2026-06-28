@@ -62,4 +62,10 @@ export const thingies: ThingyEntry[] = [
     date: '2026-06-28',
     load: () => import('./thingies/0007-snake'),
   },
+  {
+    id: '0008-star-field',
+    title: 'Star field',
+    date: '2026-06-28',
+    load: () => import('./thingies/0008-star-field'),
+  },
 ]
