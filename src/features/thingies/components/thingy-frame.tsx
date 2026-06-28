@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic'
 import { useMemo } from 'react'
 import { cn } from '@/utils/cn'
-import { TILE_SIZE } from '../constants'
+import { BLEED, TILE_PADDING, TILE_SIZE } from '../constants'
 import { ThingyActiveProvider } from '../hooks/use-thingy-active'
 import type { ThingyEntry } from '../thingies'
 import TileErrorBoundary from './tile-error-boundary'
@@ -42,9 +42,25 @@ function ThingyFrame({ entry, left, top, frozen }: ThingyFrameProps) {
         'absolute overflow-hidden bg-background',
         frozen && 'thingy-frozen'
       )}
-      style={{ left, top, width: TILE_SIZE, height: TILE_SIZE }}
+      style={{
+        left,
+        top,
+        width: TILE_SIZE,
+        height: TILE_SIZE,
+        // Opaque ring just past the edge so two flush tiles never reveal a
+        // sub-pixel sliver of the dot matrix between them at fractional zoom.
+        boxShadow: `0 0 0 ${BLEED}px var(--background)`,
+      }}
     >
-      <div className="pointer-events-none h-full w-full">
+      <div
+        className="pointer-events-none h-full w-full"
+        style={{
+          // Uniform safe area: content is inset on every side, so flush
+          // neighbours keep 2 x TILE_PADDING of breathing room. border-box
+          // (Tailwind default) keeps the frame size unchanged.
+          padding: TILE_PADDING,
+        }}
+      >
         <TileErrorBoundary>
           <ThingyActiveProvider active={!frozen}>
             <Content />

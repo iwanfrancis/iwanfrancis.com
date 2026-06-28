@@ -30,7 +30,9 @@ already meets it; if you hand-author one, follow this.
   `export default`. No props — it renders itself.
 - **Fill the square.** The frame is a fixed square that clips overflow. Fill it
   with `h-full w-full` (or an SVG that does). See *scale-independent* below for
-  sizing what's inside.
+  sizing what's inside. Note the frame insets your content by a uniform safe-area
+  padding (`TILE_PADDING`) on every side, so adjacent tiles never look squashed —
+  fill the box you're given, but don't count on bleeding right to the cell edge.
 - **Be scale-independent.** A tile must look identical at any size. The square is
   `TILE_SIZE` (currently 100px), but that may change, and the canvas also zooms —
   so drive all geometry from the tile box, never from fixed pixels. Best: an SVG

@@ -1,9 +1,20 @@
 /** Tile edge length in px. A multiple of the 20px matrix dot pitch. */
 export const TILE_SIZE = 100
-/** Gap between adjacent tiles in px, so the dot grid shows as a thin seam. */
-export const GUTTER = 2
-/** Centre-to-centre distance between adjacent cells in px. */
+/** Gap between adjacent tiles in px. Zero, so tiles sit flush and no dot grid
+ *  shows between them — the matrix only frames the blob's outer edge. */
+export const GUTTER = 0
+/** Centre-to-centre distance between adjacent cells in px. With GUTTER = 0 this
+ *  equals TILE_SIZE (100), a whole 5× the 20px dot pitch, so every tile — not
+ *  just the first — lands exactly on the dot grid. */
 export const PITCH = TILE_SIZE + GUTTER
+/** Per-tile inner safe-area inset in px, proportional to TILE_SIZE so it holds
+ *  under zoom and any size change. Content is inset by this on every side, so two
+ *  flush tiles keep 2 × TILE_PADDING of breathing room between their drawings. */
+export const TILE_PADDING = Math.round(TILE_SIZE * 0.05)
+/** Opaque outset (px) painted just past each frame's edge to cover the sub-pixel
+ *  hairline that flush tiles can leave at fractional zoom. Kept ≤ TILE_PADDING so
+ *  it never reaches drawn content. */
+export const BLEED = 1
 /** Fixed seed for deterministic placement jitter. */
 export const SEED = 0x7a9e1c3d
 
