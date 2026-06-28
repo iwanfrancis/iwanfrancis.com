@@ -68,4 +68,10 @@ export const thingies: ThingyEntry[] = [
     date: '2026-06-28',
     load: () => import('./thingies/0008-star-field'),
   },
+  {
+    id: '0009-game-of-life',
+    title: 'Game of life',
+    date: '2026-06-28',
+    load: () => import('./thingies/0009-game-of-life'),
+  },
 ]
