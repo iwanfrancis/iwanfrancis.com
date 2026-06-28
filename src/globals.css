@@ -218,6 +218,37 @@
   animation-play-state: paused !important;
 }
 
+/* A /thingies tile fades in when it mounts — i.e. when its lazily-loaded chunk
+   resolves (see thingy-frame.tsx). The class sits on the frame's inner wrapper so
+   the whole tile (opaque background + hairline-cover + drawing) ramps opacity as
+   one unit. Duration and a per-tile random start delay are set inline by the frame
+   (from FADE_IN_MS and a per-mount random value), so a batch fans out instead of
+   popping in unison. Longhands only — no `animation` shorthand — so the inline
+   duration/delay aren't reset.
+
+   Gated behind no-preference like the lava cross-fade: a reduced-motion visitor
+   matches no rule here, so the wrapper keeps its base opacity (1) and appears
+   instantly. `backwards` fill applies the 0% (opacity 0) state on mount and during
+   the delay, so there's no first-frame flash at full opacity. The freeze rule above
+   pauses this animation too, so a tile that mounts off-screen holds at opacity 0
+   until it's panned into view. */
+@media (prefers-reduced-motion: no-preference) {
+  .thingy-fade {
+    animation-name: thingy-fade-in;
+    animation-timing-function: ease-out;
+    animation-fill-mode: backwards;
+  }
+}
+
+@keyframes thingy-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 /* Ambient "lava lamp" background (see matrix-background.tsx + use-lava-field.ts).
    A canvas sized to the matrix container lays a --matrix-overlay scrim over the
    dot matrix and punches soft, drifting holes in it to reveal the vivid dots.

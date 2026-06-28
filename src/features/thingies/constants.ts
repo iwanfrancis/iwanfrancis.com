@@ -53,3 +53,11 @@ export const ZOOM_ANIM_MS = 200
  *  session the zoom-vs-pan mode is locked, so one continuous scroll can't flip
  *  between zooming and panning mid-gesture. */
 export const WHEEL_SESSION_GAP = 140
+
+// --- Fade-in tunables (felt out in-browser, like JITTER) ------------------
+/** How long a tile takes to fade from transparent to opaque when it mounts. */
+export const FADE_IN_MS = 600
+/** Upper bound (ms) of the per-tile random start delay. A tile that mounts in a
+ *  batch begins its fade somewhere in [0, this), so a batch fans out over a short
+ *  window instead of popping in unison. */
+export const FADE_DELAY_MAX_MS = 350
