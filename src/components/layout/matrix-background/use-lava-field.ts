@@ -1,4 +1,4 @@
-import { type RefObject, useEffect } from 'react'
+import { type RefObject, useEffect, useRef } from 'react'
 
 /**
  * A single drifting blob, defined in resolution-independent terms so the field
@@ -208,11 +208,25 @@ const DRIFT_SPEED = 1.45
  * fades in and the fallback fades out together (CSS-driven, gated on reduced
  * motion), so the blobs emerge gently rather than popping or visibly drawing
  * their feathered edges. Both mute by the same amount, so there is no flash.
+ *
+ * `paused` lets a host (e.g. the /thingies canvas's pause toggle) suspend the
+ * drift on demand. It is treated exactly like a hidden tab: the loop stops on a
+ * held frame and resumes when cleared. Defaults to `false`, so hosts that omit it
+ * (the landing page) are unaffected.
  */
 function useLavaField(
   canvasRef: RefObject<HTMLCanvasElement | null>,
-  fallbackRef: RefObject<HTMLDivElement | null>
+  fallbackRef: RefObject<HTMLDivElement | null>,
+  paused = false
 ) {
+  // Live pause flag the once-bound `start` reads, plus a stable handle so the
+  // `paused` effect below can re-evaluate the loop without re-running — and so
+  // re-triggering — the whole mount effect (which would replay the reveal fade).
+  // The ref is synced in that effect (not in render), so `paused` stays the
+  // effect's honest trigger; `start` only ever runs after it commits.
+  const pausedRef = useRef(paused)
+  const startRef = useRef<(() => void) | null>(null)
+
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -328,13 +342,16 @@ function useLavaField(
 
     const start = () => {
       stop()
-      // Reduced motion or hidden tab: draw one static frame, don't loop.
-      if (reduceMq.matches || document.hidden) {
-        draw(0)
+      // Reduced motion, hidden tab, or host-paused: hold a static frame, don't
+      // loop. Draw the *last* frame (not t=0) so pausing freezes the blobs in
+      // place rather than snapping them back to their start positions.
+      if (reduceMq.matches || document.hidden || pausedRef.current) {
+        draw(lastTime)
         return
       }
       raf = requestAnimationFrame(loop)
     }
+    startRef.current = start
 
     // Viewport resize: re-snapshot the anchor (re-distributing the field is
     // correct when the viewport itself changes) and redraw immediately so the
@@ -386,6 +403,15 @@ function useLavaField(
       themeObserver.disconnect()
     }
   }, [canvasRef, fallbackRef])
+
+  // React to `paused` toggling without re-running the mount effect: sync the
+  // live flag, then re-evaluate the loop through the stable handle the mount
+  // effect published. `start` reads `pausedRef`, so this stops on a held frame
+  // or resumes.
+  useEffect(() => {
+    pausedRef.current = paused
+    startRef.current?.()
+  }, [paused])
 }
 
 export default useLavaField

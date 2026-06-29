@@ -19,9 +19,15 @@ type ThingyFrameProps = {
   /** Position within the tiles layer, in px (centre of the blob is at 0,0). */
   left: number
   top: number
-  /** True when the tile is mounted but off-screen: its animations are paused
-   *  (see the .thingy-frozen rule in globals.css) until it scrolls back in. */
+  /** True when the tile's animations are paused (see the .thingy-frozen rule in
+   *  globals.css): either it is off-screen within the mount band, or the canvas
+   *  is globally paused. */
   frozen?: boolean
+  /** True when the canvas is globally paused. Distinct from `frozen` so the tile
+   *  can tell *why* it is frozen: a tile that mounts while paused must appear at
+   *  full opacity rather than holding at the deferred-fade's 0 opacity (which is
+   *  correct only for the off-screen freeze). */
+  paused?: boolean
 }
 
 /**
@@ -45,14 +51,21 @@ type ThingyFrameProps = {
  * wrapper's outward box-shadow and reopen the sub-pixel matrix sliver between flush
  * tiles that the shadow exists to hide.
  */
-function ThingyFrame({ entry, left, top, frozen }: ThingyFrameProps) {
+function ThingyFrame({ entry, left, top, frozen, paused }: ThingyFrameProps) {
   const Content = useMemo(
     () =>
       dynamic(
         () =>
           entry.load().then((mod) => {
             const Inner = mod.default
-            function FadedTile() {
+            function FadedTile({ pausedAtMount }: { pausedAtMount?: boolean }) {
+              // Decide once, at mount, whether to fade: a tile that mounts while
+              // the canvas is paused can't animate, so skip the fade and show it
+              // at full opacity (otherwise the .thingy-frozen rule would hold its
+              // fade at 0 opacity — invisible). A tile that mounts while running
+              // fades as normal. Captured in state so a later resume doesn't
+              // suddenly start the fade on an already-visible tile.
+              const [skipFade] = useState(() => Boolean(pausedAtMount))
               // One random start delay per mount (lazy init, so it's stable across
               // this instance's renders but re-rolls on a genuine remount). Plain
               // Math.random — fade timing has no SSR/determinism constraint, unlike
@@ -60,7 +73,10 @@ function ThingyFrame({ entry, left, top, frozen }: ThingyFrameProps) {
               const [delay] = useState(() => Math.random() * FADE_DELAY_MAX_MS)
               return (
                 <div
-                  className="thingy-fade h-full w-full overflow-hidden bg-background"
+                  className={cn(
+                    'h-full w-full overflow-hidden bg-background',
+                    !skipFade && 'thingy-fade'
+                  )}
                   style={{
                     // Opaque ring just past the edge so two flush tiles never
                     // reveal a sub-pixel sliver of the dot matrix between them at
@@ -68,9 +84,13 @@ function ThingyFrame({ entry, left, top, frozen }: ThingyFrameProps) {
                     boxShadow: `0 0 0 ${BLEED}px var(--background)`,
                     // Duration + per-tile stagger drive the .thingy-fade longhands
                     // (the animation name/timing/fill live in globals.css, gated by
-                    // prefers-reduced-motion).
-                    animationDuration: `${FADE_IN_MS}ms`,
-                    animationDelay: `${delay}ms`,
+                    // prefers-reduced-motion). Omitted when the fade is skipped.
+                    ...(skipFade
+                      ? {}
+                      : {
+                          animationDuration: `${FADE_IN_MS}ms`,
+                          animationDelay: `${delay}ms`,
+                        }),
                   }}
                 >
                   <div
@@ -101,7 +121,7 @@ function ThingyFrame({ entry, left, top, frozen }: ThingyFrameProps) {
     >
       <TileErrorBoundary>
         <ThingyActiveProvider active={!frozen}>
-          <Content />
+          <Content pausedAtMount={paused} />
         </ThingyActiveProvider>
       </TileErrorBoundary>
     </div>

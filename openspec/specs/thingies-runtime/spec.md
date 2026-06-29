@@ -9,27 +9,27 @@ frame loop (`useThingyFrame`), the fixed-cadence loop (`useThingyInterval`), and
 the rule that loop state resets on unmount rather than on freeze. Canvas
 behaviour (placement, pan, zoom, windowing, freeze) lives in `thingies-canvas`;
 the tile contract lives in `thingies-authoring`.
-
 ## Requirements
-
 ### Requirement: A tile can read whether it is currently active
 
 The thingies feature SHALL provide a hook (`useThingyActive`) that returns a single
 boolean telling a tile whether it is currently active. The value SHALL be `true`
 only when the tile is on-screen-active (within the active band the canvas already
-computes) AND the document is visible; it SHALL be `false` whenever the tile is
-off-screen within the freeze band OR the browser tab is hidden. The two pause
-causes — off-screen and tab-hidden — SHALL be folded into this one boolean, so a
-consumer need not distinguish them. When the hook is used outside a tile frame (no
-active-state provider present), it SHALL default to `true` so a tile rendered in
+computes) AND the document is visible AND the canvas is not globally paused; it
+SHALL be `false` whenever the tile is off-screen within the freeze band OR the
+browser tab is hidden OR the canvas is globally paused. The pause causes —
+off-screen, tab-hidden, and global pause — SHALL be folded into this one boolean,
+so a consumer need not distinguish them. When the hook is used outside a tile frame
+(no active-state provider present), it SHALL default to `true` so a tile rendered in
 isolation still runs.
 
 This hook is the primitive escape hatch: a tile running a custom loop, a Web Worker,
 or a third-party engine reads it and starts/stops its own work accordingly.
 
-#### Scenario: Active while on-screen and visible
+#### Scenario: Active while on-screen, visible, and not paused
 
-- **WHEN** a tile is within the active band and the tab is visible
+- **WHEN** a tile is within the active band, the tab is visible, and the canvas is
+  not paused
 - **THEN** `useThingyActive()` returns `true`
 
 #### Scenario: Inactive while off-screen
@@ -42,6 +42,13 @@ or a third-party engine reads it and starts/stops its own work accordingly.
 - **WHEN** the browser tab hosting an on-screen tile becomes hidden
 - **THEN** `useThingyActive()` returns `false`
 - **AND** it returns `true` again once the tab is visible
+
+#### Scenario: Inactive while globally paused
+
+- **WHEN** the canvas is globally paused while an on-screen tile is mounted
+- **THEN** `useThingyActive()` returns `false`
+- **AND** it returns `true` again once the canvas is unpaused (subject to the tile
+  still being on-screen and the tab visible)
 
 #### Scenario: Defaults to active without a provider
 
@@ -135,3 +142,4 @@ and its loop — from its initial state.
 - **WHEN** a tile is panned far enough to leave the margin band and unmount, then
   later panned back into view
 - **THEN** the tile mounts fresh and its loop begins from its initial state
+

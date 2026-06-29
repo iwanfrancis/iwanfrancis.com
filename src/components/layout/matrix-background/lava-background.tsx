@@ -12,12 +12,16 @@ import useLavaField from './use-lava-field'
  * Both are decorative: they have no content or accessible name, so assistive
  * tech ignores them (no aria-hidden needed — Biome's noAriaHiddenOnFocusable
  * treats <canvas> as focusable and rejects it).
+ *
+ * `paused` (optional) suspends the drift on demand — used by the /thingies pause
+ * toggle. It defaults to `false`, so the landing page, which omits it, is
+ * unaffected.
  */
-function LavaBackground() {
+function LavaBackground({ paused = false }: { paused?: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const fallbackRef = useRef<HTMLDivElement>(null)
 
-  useLavaField(canvasRef, fallbackRef)
+  useLavaField(canvasRef, fallbackRef, paused)
 
   return (
     <>
