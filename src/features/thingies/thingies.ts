@@ -86,4 +86,10 @@ export const thingies: ThingyEntry[] = [
     date: '2026-06-28',
     load: () => import('./thingies/0011-rotating-cube'),
   },
+  {
+    id: '0012-falling-sand',
+    title: 'Falling sand',
+    date: '2026-06-29',
+    load: () => import('./thingies/0012-falling-sand'),
+  },
 ]
