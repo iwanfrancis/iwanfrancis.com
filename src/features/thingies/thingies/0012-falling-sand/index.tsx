@@ -11,8 +11,8 @@ import { useThingyInterval } from '../../hooks/use-thingy-interval'
  * that flow down and pool in the hollows; rose LAVA that burns the sand it touches into
  * more lava and flashes the water it meets into rising STEAM; and — rarely — a violet
  * infection that seeds low in the pile and creeps upward in branching tendrils, freezing
- * the sand and water it touches solid (lava, in turn, burns straight through it). Once
- * the box
+ * the sand it touches solid — ponds wall it off, and lava burns straight through it.
+ * Once the box
  * fills, a hole opens in the middle of the floor and the floor creeps inward toward it,
  * so grains funnel out a few at a time rather than the floor dropping out all at once;
  * the infection thaws back to sand as it goes, then the box refills — a loop that never
@@ -59,7 +59,7 @@ const VIOLET_RUN = [10, 25]
 
 /** Once unlocked (after the board's second full drain), the odds a sand run is followed
  * by the violet infection rather than water/lava — kept low, a rare outbreak. */
-const VIOLET_ODDS = 0.15
+const VIOLET_ODDS = 0.5
 /** Otherwise (the non-violet case), the odds it is water rather than lava (an even
  * split). Raise it to make lava rarer, lower it for more lava. */
 const WATER_VS_LAVA = 0.5
@@ -97,6 +97,9 @@ const VIOLET_TOP = Math.round(GRID * 0.3)
 /** Outbreaks seed only at or below this row — in the bottom quarter — so the infection
  * starts down in the base and creeps upward, rather than appearing high on the pile. */
 const VIOLET_SPAWN_TOP = Math.floor(GRID * 0.75)
+/** The infection may cover at most this fraction of the whole board, then it stops
+ * spreading (lava or a drain can shrink it and free it to grow again). */
+const VIOLET_MAX = Math.floor(GRID * GRID * 0.4)
 
 const MATERIAL_CLASS: Record<number, string> = {
   [SAND]: 'text-foreground',
@@ -180,6 +183,17 @@ function countFill(g: Uint8Array): number {
   return n / g.length
 }
 
+function hasViolet(g: Uint8Array): boolean {
+  for (let i = 0; i < g.length; i++) if (g[i] === VIOLET) return true
+  return false
+}
+
+function countViolet(g: Uint8Array): number {
+  let n = 0
+  for (let i = 0; i < g.length; i++) if (g[i] === VIOLET) n++
+  return n
+}
+
 /** Advance one tick in place, returning the same (mutated) sim with updated state. */
 function step(s: Sim): Sim {
   const g = s.grid
@@ -228,6 +242,11 @@ function step(s: Sim): Sim {
       emitV = -Math.abs(emitV)
     }
 
+    // Only one outbreak at a time: a fresh infection can't be chosen or seeded while any
+    // violet is still on the board — it must run its course (consumed by lava or thawed
+    // away by a drain) first.
+    const violetPresent = hasViolet(g)
+
     // Pour one material for a stretch, then switch. Sand alternates with water, lava, or
     // (rarely) the violet infection; water/lava/violet all give way back to sand, so
     // terrain rebuilds for the next event.
@@ -236,8 +255,8 @@ function step(s: Sim): Sim {
       if (streamMat === SAND) {
         // Escalating reveal: water from the start, lava only after the first full drain,
         // the violet infection only after the second (and a touch more likely than lava
-        // would be at its share).
-        if (drains >= 2 && Math.random() < VIOLET_ODDS) {
+        // would be at its share), and never while an infection is already present.
+        if (drains >= 2 && !violetPresent && Math.random() < VIOLET_ODDS) {
           streamMat = VIOLET
         } else if (drains >= 1 && Math.random() < 1 - WATER_VS_LAVA) {
           streamMat = LAVA
@@ -263,11 +282,16 @@ function step(s: Sim): Sim {
       if (streamMat === VIOLET) {
         // The infection is frozen, so it can't pour from the top — seed it down in the
         // base (bottom quarter) of this column, infecting the topmost grain found there,
-        // so outbreaks start low and creep upward.
-        for (let y = VIOLET_SPAWN_TOP; y < GRID; y++) {
-          if (g[idx(ex, y)] !== EMPTY) {
-            g[idx(ex, y)] = VIOLET
-            break
+        // so outbreaks start low and creep upward. Only a single seed per outbreak: skip
+        // if one is already on the board, and end the run the moment one lands so pouring
+        // resumes (the run length just gives a few tries if a column was empty).
+        if (!violetPresent) {
+          for (let y = VIOLET_SPAWN_TOP; y < GRID; y++) {
+            if (g[idx(ex, y)] !== EMPTY) {
+              g[idx(ex, y)] = VIOLET
+              streamLeft = 0
+              break
+            }
           }
         }
       } else if (g[idx(ex, 0)] === EMPTY) {
@@ -484,8 +508,12 @@ function step(s: Sim): Sim {
   // jump to a grain (not across empty space), so it creeps through the material in
   // branching tendrils, gradually filling the mass. Picking a single random neighbour
   // (and marking it moved) keeps the front ragged and advances it a step at a time.
+  // Coverage is capped: once the infection fills VIOLET_MAX cells it stops spreading
+  // until lava or a drain clears some of it back below the cap.
+  let violetBudget = VIOLET_MAX - countViolet(g)
   for (let y = 0; y < GRID; y++) {
     for (let x = 0; x < GRID; x++) {
+      if (violetBudget <= 0) break
       const i = idx(x, y)
       if (moved[i] || g[i] !== VIOLET) continue
       if (Math.random() >= VIOLET_SPREAD) continue
@@ -500,19 +528,20 @@ function step(s: Sim): Sim {
         [x - 1, y + 1],
         [x + 1, y + 1],
       ]) {
-        // Stay below the ceiling (clear of the stream); infect only sand and water —
-        // lava is too hot to freeze and burns the infection instead.
+        // Stay below the ceiling (clear of the stream); infect only sand — water is not
+        // converted (ponds wall the infection off) and lava is too hot to freeze.
         if (nx < 0 || nx >= GRID || ny < VIOLET_TOP || ny >= GRID) continue
-        const t = g[idx(nx, ny)]
-        if (t === SAND || t === WATER) cands.push(idx(nx, ny))
+        if (g[idx(nx, ny)] === SAND) cands.push(idx(nx, ny))
       }
       if (cands.length > 0) {
         const j = cands[Math.floor(Math.random() * cands.length)]
         g[j] = VIOLET
         heat[j] = 0
         moved[j] = 1
+        violetBudget -= 1
       }
     }
+    if (violetBudget <= 0) break
   }
 
   return {
