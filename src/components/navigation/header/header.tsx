@@ -2,10 +2,10 @@
 
 import Link from 'next/link'
 import { type ReactNode, useEffect, useState } from 'react'
-import { Button } from '@/components/inputs/button/button'
 import Container from '@/components/layout/container/container'
 import type { NavLink } from '@/config/site'
 import { cn } from '@/utils/cn'
+import NavMenu from './nav-menu'
 
 type HeaderProps = {
   /** Brand mark rendered inside the homepage link. */
@@ -46,12 +46,8 @@ function Header({ logo, links = [], actions }: HeaderProps) {
           {logo}
         </Link>
         <div className="flex items-center gap-2">
-          {links.map(({ label, href }) => (
-            <Button key={href} variant="ghost" className="text-md" asChild>
-              <Link href={href}>{label}</Link>
-            </Button>
-          ))}
           {actions}
+          <NavMenu links={links} />
         </div>
       </Container>
     </nav>

@@ -1,7 +1,7 @@
 import { ExternalLink as ExternalLinkIcon } from 'lucide-react'
 import { cn } from '@/utils/cn'
 
-type ExternalLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement>
+type ExternalLinkProps = React.ComponentProps<'a'>
 
 function ExternalLink({ children, className, ...props }: ExternalLinkProps) {
   return (

@@ -147,6 +147,16 @@
     scroll-padding-top: 4rem;
   }
 
+  /* Radix modals (the header dropdown/sheet) lock scroll via react-remove-scroll,
+     which adds a body margin to offset the scrollbar it hides. `scrollbar-gutter:
+     stable` already reserves that space, so the extra margin double-shifts the page.
+     Cancel it — the selector out-specifies react-remove-scroll's injected rule. */
+  html body[data-scroll-locked] {
+    /* biome-ignore lint/complexity/noImportantStyles: must beat react-remove-scroll's
+       runtime-injected !important rule of equal specificity. */
+    margin-right: 0 !important;
+  }
+
   @media (min-width: 48rem) {
     html {
       scroll-padding-top: 6rem;

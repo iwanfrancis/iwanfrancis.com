@@ -3,6 +3,8 @@ import { Github, Linkedin, type LucideIcon, Mail } from 'lucide-react'
 export type NavLink = {
   label: string
   href: string
+  /** Opens in a new tab with safe rel and an external affordance; omit for internal/anchor links. */
+  external?: boolean
 }
 
 export type SocialLink = {
@@ -17,6 +19,8 @@ export const siteConfig = {
   nav: [
     { label: 'Home', href: '/#hero' },
     { label: 'Experience', href: '/#experience' },
+    { label: 'Thingies', href: '/thingies' },
+    { label: 'Balls', href: 'https://balls.iwans.space', external: true },
   ] satisfies NavLink[],
   socials: [
     {
