@@ -9,6 +9,7 @@ import {
   MAX_SCALE,
   MIN_SCALE,
   MIN_VELOCITY,
+  TILE_SIZE,
   WHEEL_SESSION_GAP,
   WHEEL_ZOOM_SPEED,
   ZOOM_ANIM_MS,
@@ -141,14 +142,23 @@ function usePanZoom({ contentW, contentH, onViewport }: UsePanZoomOptions) {
       scheduleViewportNotify()
     }
 
+    // Pan limit for one axis. The bound lets the OUTERMOST tile's centre reach the
+    // viewport centre (not just the blob's edge reach the viewport edge), so any
+    // tile can be brought to the middle at any zoom. `keepOverlap` floors it so the
+    // bound is never tighter than "scaled blob still overlaps the viewport" on a
+    // viewport narrower than one scaled tile; EDGE_MARGIN adds the usual overscroll.
+    const axisMax = (content: number, viewport: number) => {
+      const half = (content * scale) / 2
+      const keepOverlap = Math.max(0, half - viewport / 2)
+      const centreTile = Math.max(0, half - (TILE_SIZE * scale) / 2)
+      return Math.max(keepOverlap, centreTile) + EDGE_MARGIN
+    }
     const clampOffset = () => {
       const vw = container.clientWidth
       const vh = container.clientHeight
       const { contentW, contentH } = layoutRef.current
-      // When the scaled content overflows the viewport you may pan to its edge
-      // plus a margin; when it's smaller, only the margin of give (stays centred).
-      const maxX = Math.max(0, (contentW * scale - vw) / 2) + EDGE_MARGIN
-      const maxY = Math.max(0, (contentH * scale - vh) / 2) + EDGE_MARGIN
+      const maxX = axisMax(contentW, vw)
+      const maxY = axisMax(contentH, vh)
       offset.x = clamp(offset.x, -maxX, maxX)
       offset.y = clamp(offset.y, -maxY, maxY)
     }
