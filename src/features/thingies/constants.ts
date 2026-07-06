@@ -53,6 +53,12 @@ export const ZOOM_ANIM_MS = 200
  *  session the zoom-vs-pan mode is locked, so one continuous scroll can't flip
  *  between zooming and panning mid-gesture. */
 export const WHEEL_SESSION_GAP = 140
+/** Idle gap (ms) after the last transform change before the `will-change:
+ *  transform` compositing hint is released, letting the browser re-rasterise the
+ *  zoomed layers crisp at the resting scale. Kept above ZOOM_ANIM_MS and
+ *  WHEEL_SESSION_GAP so the hint is never dropped mid-gesture and re-armed a frame
+ *  later. Felt out in-browser, like the other canvas timings. */
+export const WILL_CHANGE_SETTLE_MS = 300
 
 // --- Fade-in tunables (felt out in-browser, like JITTER) ------------------
 /** How long a tile takes to fade from transparent to opaque when it mounts. */

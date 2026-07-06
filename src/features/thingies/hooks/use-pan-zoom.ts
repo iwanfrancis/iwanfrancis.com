@@ -12,6 +12,7 @@ import {
   TILE_SIZE,
   WHEEL_SESSION_GAP,
   WHEEL_ZOOM_SPEED,
+  WILL_CHANGE_SETTLE_MS,
   ZOOM_ANIM_MS,
   ZOOM_STEP,
 } from '../constants'
@@ -114,6 +115,14 @@ function usePanZoom({ contentW, contentH, onViewport }: UsePanZoomOptions) {
     let flingRaf = 0
     let zoomRaf = 0
     let viewportRaf = 0
+    let settleTimer = 0
+    let willChangeArmed = false
+
+    // The engine owns the compositing hint (the layers no longer set it inline).
+    // Start un-promoted so the first paint rasterises crisp; the first interaction
+    // arms it via markActive().
+    dots.style.willChange = 'auto'
+    tiles.style.willChange = 'auto'
 
     // Tell the canvas the transform changed, coalesced to one call per frame so a
     // 60fps pan doesn't fire 60 React updates — the canvas itself only re-renders
@@ -133,12 +142,37 @@ function usePanZoom({ contentW, contentH, onViewport }: UsePanZoomOptions) {
       viewportRaf = requestAnimationFrame(notifyViewport)
     }
 
+    // `will-change: transform` promotes each layer to its own GPU layer and PINS
+    // its raster: on a transform-only change the browser stretches the cached
+    // bitmap instead of re-rasterising — smooth to pan/zoom, but a static
+    // (non-animating) tile drawn at one scale stays blurred when zoomed until its
+    // next repaint. So arm the hint only while a gesture is running and release it
+    // once motion settles, letting the browser re-rasterise both layers crisp at
+    // the resting scale. The next interaction re-arms it before movement shows.
+    const releaseWillChange = () => {
+      settleTimer = 0
+      willChangeArmed = false
+      dots.style.willChange = 'auto'
+      tiles.style.willChange = 'auto'
+    }
+    const markActive = () => {
+      if (!willChangeArmed) {
+        willChangeArmed = true
+        dots.style.willChange = 'transform'
+        tiles.style.willChange = 'transform'
+      }
+      if (settleTimer) clearTimeout(settleTimer)
+      settleTimer = window.setTimeout(releaseWillChange, WILL_CHANGE_SETTLE_MS)
+    }
+
     const applyTransform = () => {
       const t = `translate(${offset.x}px, ${offset.y}px) scale(${scale})`
       dots.style.transform = t
       tiles.style.transform = t
       // Single chokepoint: every drag/wheel/pinch/fling/zoom/resize path ends
-      // here, so one notify hook-up covers them all.
+      // here, so one notify hook-up — and one compositing-hint arm — covers them
+      // all.
+      markActive()
       scheduleViewportNotify()
     }
 
@@ -355,6 +389,7 @@ function usePanZoom({ contentW, contentH, onViewport }: UsePanZoomOptions) {
       stopFling()
       stopZoomAnim()
       if (viewportRaf) cancelAnimationFrame(viewportRaf)
+      if (settleTimer) clearTimeout(settleTimer)
       container.removeEventListener('wheel', onWheel)
       window.removeEventListener('keydown', onKeyDown)
       window.removeEventListener('resize', onResize)

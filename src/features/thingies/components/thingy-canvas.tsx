@@ -147,7 +147,6 @@ function ThingyCanvas() {
           left: '50%',
           top: '50%',
           transformOrigin: '0 0',
-          willChange: 'transform',
         }}
       >
         {/* Static inner offset centres the field on the layer's (0,0) anchor. */}
@@ -171,7 +170,6 @@ function ThingyCanvas() {
           left: '50%',
           top: '50%',
           transformOrigin: '0 0',
-          willChange: 'transform',
         }}
       >
         {layout.tiles
