@@ -124,6 +124,9 @@ tile's position on the canvas.
 - The new tile satisfies the README contract.
 
 Then tell the author the id, the file to edit
-(`src/features/thingies/thingies/NNNN-<slug>/index.tsx`), and that running
-`yarn dev` shows it at the frontier edge of the blob on `/thingies`. Formatting is
-enforced by the pre-commit hook, so no manual format step is needed.
+(`src/features/thingies/thingies/NNNN-<slug>/index.tsx`), and — for checking the tile
+in isolation — its preview route: `/thingies/NNNN-<slug>` (or just the number,
+`/thingies/NNNN`), which renders this one tile large and always-animating on its own
+page, so there's no need to hunt for it among the placed tiles on the `/thingies`
+canvas. To verify the tile's behaviour, drive that preview route — not the canvas.
+Formatting is enforced by the pre-commit hook, so no manual format step is needed.
