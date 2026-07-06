@@ -104,4 +104,10 @@ export const thingies: ThingyEntry[] = [
     date: '2026-07-06',
     load: () => import('./thingies/0014-rotating-pyramid'),
   },
+  {
+    id: '0015-dvd-bounce',
+    title: 'DVD bounce',
+    date: '2026-07-06',
+    load: () => import('./thingies/0015-dvd-bounce'),
+  },
 ]
