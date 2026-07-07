@@ -11,6 +11,13 @@ A browser game is in progress as a **separate project** with its own deployment.
 will live at a subdomain (e.g. `balls.iwans.space`), not inside this app — this repo's
 only involvement is linking out to it.
 
+Hosted **Claude artifacts** are served from a separate sibling repo, **`artifact-server`**
+(its own Railway service, bound to `artifacts.iwans.space`) — a read-only S3 proxy in front
+of a Railway Bucket, deliberately isolated from this app's origin and secrets. This repo
+owns the design record (`openspec/changes/artifact-hosting/`) and, in later changes, the
+gated upload/management UI at `/artifacts`. Uploading currently is manual (S3 CLI); see
+`openspec/notes/artifact-hosting-roadmap.md` for the auth (②) and management-UI (③) phases.
+
 Deployed on **Railway**, served at **iwans.space** with DNS on **Cloudflare** (proxied /
 orange cloud). The legacy domain **iwanfrancis.com** 301-redirects to it. Previously hosted
 on Vercel.
