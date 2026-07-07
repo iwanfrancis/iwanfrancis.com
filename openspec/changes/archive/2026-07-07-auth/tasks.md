@@ -48,4 +48,4 @@
 
 ## 8. Docs
 
-- [ ] 8.1 Update `CLAUDE.md` (artifacts paragraph) and `openspec/notes/artifact-hosting-roadmap.md` status line to mark ② as shipped once implemented. _(Do at archive time, once verified + committed.)_
+- [x] 8.1 Update `CLAUDE.md` (artifacts paragraph) and `openspec/notes/artifact-hosting-roadmap.md` status line to mark ② as shipped once implemented. _(CLAUDE.md now describes the live `/artifacts` gate; roadmap ② marked implemented/archived. Renamed feature+capability `admin-auth` → `auth` throughout.)_

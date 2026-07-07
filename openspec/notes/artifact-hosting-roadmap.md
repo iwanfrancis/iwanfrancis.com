@@ -6,7 +6,7 @@ either up and run `/opsx:propose` without re-deriving the decisions we already m
 
 ```
 ① artifact-hosting      storage + public serving substrate   ← PROPOSED (see openspec/changes/artifact-hosting/)
-② admin-auth            self-contained gate for the admin UI  ← documented below, not proposed
+② auth                  self-contained gate for the admin UI  ← SHIPPED (specs/auth/; archive/2026-07-07-auth); deploy = set Railway env
 ③ artifact-management   upload API + drag-drop UI + listing   ← documented below, not proposed
 ```
 
@@ -42,14 +42,14 @@ is summarised here (the original chat isn't durable).
 
 ---
 
-## ② admin-auth
+## ② auth
 
 **Goal**: a self-contained "only Iwan" gate for the future artifact admin surface, entirely in the
 main repo — no third-party auth provider.
 
 - **Repo**: `iwanfrancis.com` (main site).
 - **Depends on**: nothing (independent of ①). Must land before ③.
-- **Suggested capability name**: `admin-auth`.
+- **Capability name**: `auth` (code feature at `src/features/auth/`).
 
 **Decisions (locked in exploration):**
 

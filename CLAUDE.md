@@ -13,10 +13,11 @@ only involvement is linking out to it.
 
 Hosted **Claude artifacts** are served from a separate sibling repo, **`artifact-server`**
 (its own Railway service, bound to `artifacts.iwans.space`) — a read-only S3 proxy in front
-of a Railway Bucket, deliberately isolated from this app's origin and secrets. This repo
-owns the design record (`openspec/changes/artifact-hosting/`) and, in later changes, the
-gated upload/management UI at `/artifacts`. Uploading currently is manual (S3 CLI); see
-`openspec/notes/artifact-hosting-roadmap.md` for the auth (②) and management-UI (③) phases.
+of a Railway Bucket, deliberately isolated from this app's origin and secrets. This app now
+gates its `/artifacts` admin surface behind a self-contained password login (change ②, the
+`auth` feature at `src/features/auth/`; sign in at `/login`) — currently an empty shell.
+Uploading stays manual (S3 CLI) until the management UI (change ③); see
+`openspec/notes/artifact-hosting-roadmap.md`.
 
 Deployed on **Railway**, served at **iwans.space** with DNS on **Cloudflare** (proxied /
 orange cloud). The legacy domain **iwanfrancis.com** 301-redirects to it. Previously hosted

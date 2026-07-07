@@ -9,7 +9,7 @@ Defines how hosted Claude artifacts are stored and served publicly at
 404/malformed-request behaviour, and the requirement that artifact content is served only from
 the artifacts subdomain — never the main site origin. Serving is delivered by the separate
 `artifact-server` service; upload, authentication, and management are out of scope (later changes
-`admin-auth` and `artifact-management`).
+`auth` and `artifact-management`).
 
 ## Requirements
 ### Requirement: Artifact storage contract
