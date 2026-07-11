@@ -29,7 +29,7 @@
 
 - [x] 3.1 Create `.github/workflows/ci.yml`: push to `main` + `pull_request`; Node 20 with yarn
       cache; `yarn install --frozen-lockfile`; `yarn lint`; `yarn typecheck`; `yarn test`
-- [ ] 3.2 Push and confirm the workflow runs green on GitHub
+- [x] 3.2 Push and confirm the workflow runs green on GitHub (run #1 on `3f74edd`: success)
 
 ## 4. Backfill — security boundaries
 
