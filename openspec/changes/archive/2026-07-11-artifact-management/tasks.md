@@ -46,9 +46,9 @@
 ## 8. Verify & tidy
 
 - [x] 8.1 `yarn lint` and `yarn build` clean (don't build while `yarn dev` is running). _(lint, `tsc --noEmit`, and `yarn build` all clean — dev stopped for the build, then restarted. Smoke-tested: gate redirects/401s unauth, login sets the cookie, authed `/artifacts` renders, listing fails gracefully with blank creds.)_
-- [ ] 8.2 Manual: logged in, upload a single `.html` with a slug → appears in list, share link renders via `artifact-server` with correct MIME types. _(needs real `ARTIFACTS_S3_*` creds — for the user to run.)_
+- [x] 8.2 Manual: logged in, upload a single `.html` with a slug → appears in list, share link renders via `artifact-server` with correct MIME types. _(verified against the live bucket.)_
 - [ ] 8.3 Manual: upload a `.zip` with assets → all assets load at the link with correct MIME types. _(needs real creds.)_
 - [ ] 8.4 Manual: a `.zip` with a `../` entry is rejected (nothing written); an oversized / too-many-entry upload is rejected. _(needs real creds.)_
-- [ ] 8.5 Manual: re-using an existing slug → 409; delete removes it from the list and the link 404s. _(needs real creds.)_
+- [x] 8.5 Manual: re-using an existing slug → 409; delete removes it from the list and the link 404s. _(verified against the live bucket.)_
 - [ ] 8.6 Confirm origin isolation: no `ARTIFACTS_S3_*` on the `artifact-server` service; admin cookie stays host-only. _(deploy-time check — for the user.)_
 - [x] 8.7 Update `openspec/notes/artifact-hosting-roadmap.md` status line for ③; `CLAUDE.md` where it describes `/artifacts` as an empty shell; and remove the now-resolved `components.json` alias item from `CLAUDE.md`'s "Known cleanup backlog".
