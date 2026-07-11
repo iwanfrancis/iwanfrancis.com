@@ -18,7 +18,8 @@
     "enabled": true,
     "domains": {
       "react": "recommended",
-      "next": "recommended"
+      "next": "recommended",
+      "test": "recommended"
     },
     "rules": {
       "preset": "recommended"

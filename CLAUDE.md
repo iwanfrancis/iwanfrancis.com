@@ -37,8 +37,11 @@ Package manager: **yarn** (classic / v1).
 | `yarn start`  | Serve the production build                       |
 | `yarn lint`   | Lint + format check, read-only (`biome check .`) |
 | `yarn format` | Format & fix in place (`biome format --write .`) |
+| `yarn test`       | Run the full test suite once (`vitest run`) |
+| `yarn test:watch` | Vitest in watch mode                        |
+| `yarn typecheck`  | Type-check without emitting (`tsc --noEmit`) |
 
-There is no test suite yet.
+`yarn test` is safe to run while `yarn dev` is up (unlike `yarn build`).
 
 ## Tech stack
 
@@ -94,6 +97,42 @@ doc. Keep new code within these conventions.
 - **Commits**: Conventional Commits, enforced by commitlint via a Husky `commit-msg` hook.
   `lint-staged` runs `biome check --write` on staged files on `pre-commit`. (The existing
   history also uses gitmoji.)
+
+## Testing
+
+**Vitest**, two projects routed by extension: `*.test.ts` runs in `node`, `*.test.tsx` runs in
+`jsdom` with `src/testing/setup.ts` (jest-dom matchers, RTL cleanup, Radix DOM shims). Tests are
+colocated next to their subject (`foo.ts` → `foo.test.ts`); shared test code lives in
+`src/testing/` (a shared layer — it must not import from `features/` or `app/`). Import `it`,
+`expect`, `vi` etc. from `vitest` explicitly — globals are off. Biome's `test` domain lints test
+files (no `it.only`, etc.). CI runs lint, typecheck, and tests on every push; no coverage
+thresholds.
+
+**Structure — every test:**
+
+- ALWAYS structure tests with `// Arrange` / `// Act` / `// Assert` comments when the test has
+  distinct phases. Single-expression tests and `it.each` tables skip the comments.
+- ALWAYS name tests by behaviour ("rejects a token signed with a different secret") — never
+  "test X" / "works".
+- Keep structure flat: at most one `describe` per unit under test; prefer inline arrange (or a
+  small named helper) over `beforeEach` chains.
+- Use `it.each` for input/output tables.
+- Stub env with `vi.stubEnv`; never use real secrets. Build zip fixtures in-memory with `fflate`.
+- Don't test async RSC pages (RTL can't render them), presentational sections, or visuals.
+
+**React tests — Kent C Dodds RTL rules (not machine-enforced; follow them):**
+
+- Query priority: `getByRole(…, { name })` → label → text; `data-testid` only as a last resort.
+  If a role query can't find it, fix the component's markup — NEVER add ARIA attributes just to
+  satisfy a test.
+- ALWAYS query via `screen`; never destructure queries from `render`.
+- ALWAYS interact via `userEvent.setup()`; `fireEvent` is banned. Sole carve-out: an event
+  user-event cannot produce (e.g. drag-and-drop `drop`) may use `fireEvent` with a comment.
+- `findBy*` for elements that appear asynchronously; never `waitFor(() => getBy…)`.
+- `queryBy*` only for asserting absence (`expect(…).not.toBeInTheDocument()`).
+- `waitFor`: one assertion per callback, no side-effects inside, never empty.
+- Assert with jest-dom matchers (`toBeInTheDocument`, `toBeDisabled`, …), not truthiness.
+- Never call `cleanup` manually or wrap RTL calls in `act()` — the setup handles both.
 
 ## OpenSpec workflow
 
