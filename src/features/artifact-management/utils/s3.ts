@@ -74,11 +74,19 @@ export async function putObject(
   )
 }
 
-async function readArtifactMeta(prefix: string): Promise<Artifact | null> {
+/**
+ * Read and validate a slug's stored `meta.json`, or `null` if it is absent or
+ * unreadable. Returns the raw persisted `ArtifactMeta` (unlike
+ * `readArtifactMeta`, which shapes an `Artifact` for the listing), so the update
+ * path can preserve `createdAt` and the existing title.
+ */
+export async function getArtifactMeta(
+  slug: string
+): Promise<ArtifactMeta | null> {
   const { bucket } = getS3Config()
   try {
     const response = await getClient().send(
-      new GetObjectCommand({ Bucket: bucket, Key: `${prefix}meta.json` })
+      new GetObjectCommand({ Bucket: bucket, Key: `${slug}/meta.json` })
     )
     if (!response.Body) {
       return null
@@ -93,15 +101,28 @@ async function readArtifactMeta(prefix: string): Promise<Artifact | null> {
       slug: meta.slug,
       title: meta.title || meta.slug,
       createdAt: meta.createdAt,
-      url: artifactUrl(meta.slug),
+      updatedAt: meta.updatedAt,
     }
   } catch (error) {
-    // A prefix with no (or unreadable) meta.json is a partial/foreign upload —
-    // skip it rather than failing the whole listing.
+    // A slug with no (or unreadable) meta.json is a partial/foreign upload.
     if (isNotFound(error)) {
       return null
     }
     throw error
+  }
+}
+
+async function readArtifactMeta(prefix: string): Promise<Artifact | null> {
+  const meta = await getArtifactMeta(prefix.replace(/\/$/, ''))
+  if (!meta) {
+    return null
+  }
+  return {
+    slug: meta.slug,
+    title: meta.title,
+    createdAt: meta.createdAt,
+    updatedAt: meta.updatedAt,
+    url: artifactUrl(meta.slug),
   }
 }
 
@@ -125,8 +146,15 @@ export async function listArtifacts(): Promise<Artifact[]> {
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
 }
 
-/** Remove every object under `<slug>/` (batched, paginated). Idempotent. */
-export async function deleteArtifact(slug: string): Promise<void> {
+/**
+ * Delete every object under `<slug>/` whose key is NOT in `keep` (batched,
+ * paginated). Used after an in-place update to remove files the new version no
+ * longer contains; a no-op when nothing is stale.
+ */
+export async function pruneArtifact(
+  slug: string,
+  keep: Set<string>
+): Promise<void> {
   const { bucket } = getS3Config()
   let continuationToken: string | undefined
   do {
@@ -140,6 +168,7 @@ export async function deleteArtifact(slug: string): Promise<void> {
     const objects = (listing.Contents ?? [])
       .map((object) => object.Key)
       .filter((key): key is string => Boolean(key))
+      .filter((key) => !keep.has(key))
       .map((Key) => ({ Key }))
     if (objects.length > 0) {
       await getClient().send(
@@ -153,4 +182,9 @@ export async function deleteArtifact(slug: string): Promise<void> {
       ? listing.NextContinuationToken
       : undefined
   } while (continuationToken)
+}
+
+/** Remove every object under `<slug>/` (batched, paginated). Idempotent. */
+export async function deleteArtifact(slug: string): Promise<void> {
+  await pruneArtifact(slug, new Set())
 }

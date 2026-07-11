@@ -5,19 +5,14 @@ import type {
   ArtifactMeta,
   UploadSuccess,
 } from '@/features/artifact-management/types/artifact'
-import {
-  artifactUrl,
-  UPLOAD_LIMITS,
-} from '@/features/artifact-management/utils/config'
-import {
-  extractZip,
-  UploadError,
-} from '@/features/artifact-management/utils/extract'
+import { artifactUrl } from '@/features/artifact-management/utils/config'
+import { UploadError } from '@/features/artifact-management/utils/extract'
 import {
   listArtifacts,
   putObject,
   slugExists,
 } from '@/features/artifact-management/utils/s3'
+import { entriesFromUpload } from '@/features/artifact-management/utils/upload'
 import { isValidSlug } from '@/features/artifact-management/utils/validate'
 import { verifySession } from '@/features/auth/utils/session'
 import { isSameOrigin } from '@/utils/same-origin'
@@ -33,18 +28,6 @@ export const runtime = 'nodejs'
 async function hasSession(): Promise<boolean> {
   const token = (await cookies()).get(SESSION_COOKIE_NAME)?.value
   return verifySession(token)
-}
-
-/** Classify an upload by filename extension, never by the client's MIME type. */
-function uploadKind(file: File): 'html' | 'zip' | 'unsupported' {
-  const name = file.name.toLowerCase()
-  if (name.endsWith('.html') || name.endsWith('.htm')) {
-    return 'html'
-  }
-  if (name.endsWith('.zip')) {
-    return 'zip'
-  }
-  return 'unsupported'
 }
 
 /** List hosted artifacts. */
@@ -92,20 +75,6 @@ export async function POST(request: Request) {
       { status: 400 }
     )
   }
-  if (file.size > UPLOAD_LIMITS.maxTotalBytes) {
-    return NextResponse.json(
-      { error: 'upload exceeds the total size limit' },
-      { status: 413 }
-    )
-  }
-
-  const kind = uploadKind(file)
-  if (kind === 'unsupported') {
-    return NextResponse.json(
-      { error: 'file must be a .html file or a .zip bundle' },
-      { status: 400 }
-    )
-  }
 
   try {
     if (await slugExists(slug)) {
@@ -115,13 +84,9 @@ export async function POST(request: Request) {
       )
     }
 
-    const bytes = new Uint8Array(await file.arrayBuffer())
-    // Validate the whole upload (zip-slip, caps, root index) before any write,
-    // so a rejected archive never leaves a partial artifact behind.
-    const entries =
-      kind === 'html'
-        ? [{ path: 'index.html', bytes, contentType: 'text/html' }]
-        : extractZip(bytes)
+    // Validate the whole upload (size, kind, zip-slip, caps, root index) before
+    // any write, so a rejected upload never leaves a partial artifact behind.
+    const entries = await entriesFromUpload(file)
 
     for (const entry of entries) {
       await putObject(`${slug}/${entry.path}`, entry.bytes, entry.contentType)

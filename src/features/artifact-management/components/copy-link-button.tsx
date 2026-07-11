@@ -22,12 +22,12 @@ export default function CopyLinkButton({ url }: { url: string }) {
     <Button
       type="button"
       variant="outline"
-      size="sm"
-      className="w-full"
+      size="icon"
+      aria-label={copied ? 'Link copied' : 'Copy share link'}
+      title={copied ? 'Copied' : 'Copy link'}
       onClick={handleCopy}
     >
       {copied ? <Check /> : <Copy />}
-      {copied ? 'Copied' : 'Copy'}
     </Button>
   )
 }

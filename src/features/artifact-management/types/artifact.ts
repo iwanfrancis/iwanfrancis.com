@@ -4,6 +4,8 @@ export type Artifact = {
   title: string
   /** ISO-8601 UTC timestamp. */
   createdAt: string
+  /** ISO-8601 UTC timestamp of the last in-place update, if any. */
+  updatedAt?: string
   /** Public share URL served by artifact-server. */
   url: string
 }
@@ -11,11 +13,13 @@ export type Artifact = {
 /**
  * Shape persisted to `<slug>/meta.json`, per the artifact-hosting storage
  * contract (bucket is the sole source of truth — there is no database).
+ * `updatedAt` is added on an in-place update; absent for never-updated artifacts.
  */
 export type ArtifactMeta = {
   slug: string
   title: string
   createdAt: string
+  updatedAt?: string
 }
 
 /** Successful-upload payload returned by the upload endpoint. */

@@ -1,6 +1,6 @@
 'use client'
 
-import { ExternalLink, Trash2 } from 'lucide-react'
+import { ExternalLink, Loader2, Trash2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import {
@@ -24,6 +24,7 @@ import {
 } from '@/components/layout/alert-dialog/alert-dialog'
 import type { Artifact } from '@/features/artifact-management/types/artifact'
 import CopyLinkButton from './copy-link-button'
+import UpdateDialog from './update-dialog'
 
 // Fixed locale + UTC so server and client render the same string (no hydration
 // mismatch).
@@ -55,27 +56,37 @@ export default function ArtifactCard({ artifact }: { artifact: Artifact }) {
       <CardHeader>
         <CardTitle>{artifact.title}</CardTitle>
         <CardDescription>
-          {dateFormat.format(new Date(artifact.createdAt))} · {artifact.slug}
+          {artifact.updatedAt
+            ? `Updated ${dateFormat.format(new Date(artifact.updatedAt))}`
+            : dateFormat.format(new Date(artifact.createdAt))}{' '}
+          · {artifact.slug}
         </CardDescription>
       </CardHeader>
-      <CardContent className="mt-auto grid grid-cols-3 gap-2">
-        <Button asChild variant="outline" size="sm" className="w-full">
-          <a href={artifact.url} target="_blank" rel="noreferrer">
+      <CardContent className="mt-auto flex justify-end gap-1">
+        <Button asChild variant="outline" size="icon">
+          <a
+            href={artifact.url}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Open artifact"
+            title="Open"
+          >
             <ExternalLink />
-            Open
           </a>
         </Button>
         <CopyLinkButton url={artifact.url} />
+        <UpdateDialog artifact={artifact} />
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button
-              variant="destructive"
-              size="sm"
-              className="w-full"
+              variant="outline"
+              size="icon"
               disabled={deleting}
+              aria-label="Delete artifact"
+              title="Delete"
+              className="text-destructive hover:text-destructive"
             >
-              <Trash2 />
-              {deleting ? 'Deleting…' : 'Delete'}
+              {deleting ? <Loader2 className="animate-spin" /> : <Trash2 />}
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>

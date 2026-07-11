@@ -1,18 +1,11 @@
 'use client'
 
-import { UploadCloud } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import {
-  type ChangeEvent,
-  type DragEvent,
-  type FormEvent,
-  useRef,
-  useState,
-} from 'react'
+import { type FormEvent, useState } from 'react'
 import { Button } from '@/components/inputs/button/button'
 import { Input } from '@/components/inputs/input/input'
 import { Label } from '@/components/inputs/label/label'
-import { cn } from '@/utils/cn'
+import FileDropzone from './file-dropzone'
 
 /** Derive a contract-valid slug suggestion from a chosen filename. */
 function slugFromFilename(name: string): string {
@@ -25,11 +18,9 @@ function slugFromFilename(name: string): string {
 
 export default function UploadForm() {
   const router = useRouter()
-  const inputRef = useRef<HTMLInputElement>(null)
   const [file, setFile] = useState<File | null>(null)
   const [slug, setSlug] = useState('')
   const [title, setTitle] = useState('')
-  const [dragging, setDragging] = useState(false)
   const [pending, setPending] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -38,15 +29,6 @@ export default function UploadForm() {
     setError(null)
     if (next && slug === '') {
       setSlug(slugFromFilename(next.name))
-    }
-  }
-
-  function handleDrop(event: DragEvent<HTMLButtonElement>) {
-    event.preventDefault()
-    setDragging(false)
-    const dropped = event.dataTransfer.files?.[0]
-    if (dropped) {
-      chooseFile(dropped)
     }
   }
 
@@ -69,9 +51,6 @@ export default function UploadForm() {
       setFile(null)
       setSlug('')
       setTitle('')
-      if (inputRef.current) {
-        inputRef.current.value = ''
-      }
       setPending(false)
       router.refresh()
       return
@@ -86,40 +65,7 @@ export default function UploadForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <button
-        type="button"
-        onClick={() => inputRef.current?.click()}
-        onDragOver={(event) => {
-          event.preventDefault()
-          setDragging(true)
-        }}
-        onDragLeave={() => setDragging(false)}
-        onDrop={handleDrop}
-        className={cn(
-          'flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed p-8 text-center text-sm transition-colors',
-          dragging
-            ? 'border-primary bg-accent'
-            : 'border-input hover:bg-accent/50'
-        )}
-      >
-        <UploadCloud className="text-muted-foreground size-6" />
-        {file ? (
-          <span className="font-medium">{file.name}</span>
-        ) : (
-          <span className="text-muted-foreground">
-            Drag &amp; drop a .html or .zip, or click to choose
-          </span>
-        )}
-      </button>
-      <input
-        ref={inputRef}
-        type="file"
-        accept=".html,.htm,.zip"
-        className="hidden"
-        onChange={(event: ChangeEvent<HTMLInputElement>) =>
-          chooseFile(event.target.files?.[0] ?? null)
-        }
-      />
+      <FileDropzone file={file} onFile={chooseFile} disabled={pending} />
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="artifact-slug">Slug</Label>
