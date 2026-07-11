@@ -10,7 +10,6 @@ Defines how hosted Claude artifacts are stored and served publicly at
 the artifacts subdomain — never the main site origin. Serving is delivered by the separate
 `artifact-server` service; upload, authentication, and management are out of scope (later changes
 `auth` and `artifact-management`).
-
 ## Requirements
 ### Requirement: Artifact storage contract
 
@@ -71,16 +70,6 @@ types.
 - **THEN** the responses carry `Content-Type: text/html` and `Content-Type: text/javascript`
   respectively
 
-### Requirement: Artifact responses are cached as immutable
-
-Because an artifact's content at a given slug never changes, successful artifact responses SHALL
-include the header `Cache-Control: public, max-age=31536000, immutable`.
-
-#### Scenario: A served artifact is marked immutable
-
-- **WHEN** an existing artifact object is served with a 200 response
-- **THEN** the response includes `Cache-Control: public, max-age=31536000, immutable`
-
 ### Requirement: Missing artifacts return 404
 
 A request that maps to an object key not present in the store SHALL return an HTTP 404 response and
@@ -128,4 +117,32 @@ main site and any future admin session.
 
 - **WHEN** a request for the same slug path is made against the `iwans.space` origin
 - **THEN** the artifact content is not served from that origin
+
+### Requirement: Artifact responses use validation caching
+
+Successful artifact responses SHALL support cache revalidation rather than being marked immutable, so
+that content updated in place at an existing slug can propagate to clients. Each successful 200
+artifact response SHALL include a strong `ETag` derived from the served object and a `Cache-Control`
+header that requires a cached copy to be revalidated with the origin before reuse — either
+`no-cache`, or a short `max-age` combined with `must-revalidate` — and SHALL NOT include the
+`immutable` directive. When a conditional request carries an `If-None-Match` that matches the current
+object's ETag, the system SHALL respond `304 Not Modified` with no body.
+
+#### Scenario: A served artifact carries a revalidatable cache header and an ETag
+
+- **WHEN** an existing artifact object is served with a 200 response
+- **THEN** the response includes an `ETag` and a `Cache-Control` header that forces revalidation
+  (e.g. `no-cache`, or `max-age=<small>, must-revalidate`) and does not include `immutable`
+
+#### Scenario: Unchanged content revalidates to 304
+
+- **WHEN** a client re-requests an artifact object with `If-None-Match` equal to the object's current
+  ETag
+- **THEN** the response status is 304 Not Modified with no body
+
+#### Scenario: Updated content is fetched fresh
+
+- **WHEN** an artifact's bytes at a slug have changed and a client re-requests with an `If-None-Match`
+  from the previous version
+- **THEN** the response status is 200 with the new bytes and a new ETag
 

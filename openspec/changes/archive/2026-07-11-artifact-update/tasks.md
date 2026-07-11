@@ -15,9 +15,9 @@
 
 ## 2. Main app: metadata & types
 
-- [ ] 2.1 Add optional `updatedAt` (ISO-8601) to `ArtifactMeta` and `Artifact` in
+- [x] 2.1 Add optional `updatedAt` (ISO-8601) to `ArtifactMeta` and `Artifact` in
   `src/features/artifact-management/types/artifact.ts`
-- [ ] 2.2 Surface `updatedAt` when reading meta in `s3.ts` `readArtifactMeta` (fall through to `createdAt`
+- [x] 2.2 Surface `updatedAt` when reading meta in `s3.ts` `readArtifactMeta` (fall through to `createdAt`
   when absent)
 
 ## 3. Main app: replace-then-prune write helper
