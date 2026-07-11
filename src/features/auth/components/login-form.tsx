@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { type FormEvent, useState } from 'react'
 import { Button } from '@/components/inputs/button/button'
-import { cn } from '@/utils/cn'
+import { Input } from '@/components/inputs/input/input'
 
 type LoginFormProps = {
   next: string
@@ -44,7 +44,7 @@ export default function LoginForm({ next }: LoginFormProps) {
         className="flex flex-col gap-2 text-sm font-medium"
       >
         Password
-        <input
+        <Input
           id="admin-password"
           name="password"
           type="password"
@@ -52,10 +52,6 @@ export default function LoginForm({ next }: LoginFormProps) {
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           aria-invalid={error}
-          className={cn(
-            'border-input bg-background focus-visible:ring-ring/80 h-9 rounded-md border px-3 text-base shadow-xs outline-none focus-visible:ring-[3px]',
-            error && 'border-destructive'
-          )}
         />
       </label>
       {error && (

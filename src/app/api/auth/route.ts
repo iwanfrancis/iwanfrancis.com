@@ -3,27 +3,11 @@ import { SESSION_COOKIE_NAME } from '@/config/auth'
 import { sessionCookieOptions } from '@/features/auth/utils/cookie'
 import { verifyPassword } from '@/features/auth/utils/password'
 import { createSessionToken } from '@/features/auth/utils/session'
+import { isSameOrigin } from '@/utils/same-origin'
 
 // Pinned to the Node runtime so the raw-password comparison can use node:crypto
 // and never touches the Edge (middleware) path.
 export const runtime = 'nodejs'
-
-/**
- * Defence-in-depth CSRF check: reject cross-site POSTs. A browser always sends
- * `Origin` on a cross-site request; when it is present it must match the request
- * host. Absent `Origin` (e.g. same-origin form posts, curl) is allowed.
- */
-function isSameOrigin(request: Request): boolean {
-  const origin = request.headers.get('origin')
-  if (!origin) {
-    return true
-  }
-  try {
-    return new URL(origin).host === request.headers.get('host')
-  } catch {
-    return false
-  }
-}
 
 export async function POST(request: Request) {
   if (!isSameOrigin(request)) {

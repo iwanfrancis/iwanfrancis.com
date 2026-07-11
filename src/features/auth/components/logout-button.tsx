@@ -16,7 +16,12 @@ export default function LogoutButton() {
   }
 
   return (
-    <Button variant="outline" onClick={handleLogout} disabled={pending}>
+    <Button
+      variant="outline"
+      className="min-w-32"
+      onClick={handleLogout}
+      disabled={pending}
+    >
       {pending ? 'Signing out…' : 'Sign out'}
     </Button>
   )

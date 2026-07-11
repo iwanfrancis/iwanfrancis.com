@@ -15,8 +15,11 @@ Hosted **Claude artifacts** are served from a separate sibling repo, **`artifact
 (its own Railway service, bound to `artifacts.iwans.space`) — a read-only S3 proxy in front
 of a Railway Bucket, deliberately isolated from this app's origin and secrets. This app now
 gates its `/artifacts` admin surface behind a self-contained password login (change ②, the
-`auth` feature at `src/features/auth/`; sign in at `/login`) — currently an empty shell.
-Uploading stays manual (S3 CLI) until the management UI (change ③); see
+`auth` feature at `src/features/auth/`; sign in at `/login`). That surface is now the
+management UI (change ③, the `artifact-management` feature at `src/features/artifact-management/`):
+drag-and-drop upload of a single `.html` or a `.zip` bundle, plus a listing with copy-link and
+delete. It writes to the same Railway Bucket as `artifact-server` using the main app's own
+`ARTIFACTS_S3_*` credentials (never added to `artifact-server`); see
 `openspec/notes/artifact-hosting-roadmap.md`.
 
 Deployed on **Railway**, served at **iwans.space** with DNS on **Cloudflare** (proxied /
@@ -119,7 +122,6 @@ problem isn't clear yet.
 Things noticed but intentionally left for spec-driven tidy-up — don't treat as done:
 
 - `src/app/page.tsx` imports `Education` but never renders it (dead import).
-- `components.json` aliases (`@/lib/...`) don't match the actual layout (`@/utils/...`).
 - Folder typo: `src/components/layout/seperator/` → `separator`.
 - `README.md` is a single line.
 

@@ -5,9 +5,9 @@ This note captures the two that aren't proposed yet, in enough detail that anoth
 either up and run `/opsx:propose` without re-deriving the decisions we already made.
 
 ```
-① artifact-hosting      storage + public serving substrate   ← PROPOSED (see openspec/changes/artifact-hosting/)
+① artifact-hosting      storage + public serving substrate   ← SHIPPED (specs/artifact-hosting/; archive/2026-07-07-artifact-hosting)
 ② auth                  self-contained gate for the admin UI  ← SHIPPED (specs/auth/; archive/2026-07-07-auth); deploy = set Railway env
-③ artifact-management   upload API + drag-drop UI + listing   ← documented below, not proposed
+③ artifact-management   upload API + drag-drop UI + listing   ← IMPLEMENTED (openspec/changes/artifact-management/); deploy = set ARTIFACTS_S3_* on the main app
 ```
 
 **Read `openspec/changes/artifact-hosting/{proposal,design,specs,tasks}.md` first** — it holds the
