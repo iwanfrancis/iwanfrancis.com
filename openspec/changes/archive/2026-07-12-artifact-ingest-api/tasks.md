@@ -37,4 +37,4 @@
 ## 7. Verify
 
 - [x] 7.1 `yarn lint`, `yarn typecheck`, `yarn test` all pass.
-- [ ] 7.2 (post-deploy, manual) After `ARTIFACTS_API_TOKEN` is set on Railway: `curl -X POST https://<deploy>/api/ingest -H "Authorization: Bearer $TOKEN" -H "Content-Type: text/html" --data-binary @sample.html` returns `201` and the returned URL serves the artifact; a bad/absent token returns `401`. Blocked until deployed — cannot run locally.
+- [x] 7.2 (post-deploy) Verified against the live deploy: token-authenticated `POST https://iwans.space/api/ingest` returns `201` and the returned URL serves the artifact; a missing/wrong token returns `401`. Confirmed end-to-end via both the iOS Share Shortcut and the macOS Finder Quick Action.
