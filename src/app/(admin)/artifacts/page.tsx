@@ -12,17 +12,17 @@ export const metadata: Metadata = {
 
 /**
  * Fetches the listing server-side (only reached once ProtectedRoute has cleared
- * the session). Tolerates a listing failure — e.g. the bucket env not being
- * configured locally — so the upload form still renders.
+ * the session) to seed the client query, so first paint has no loading state.
+ * Tolerates a listing failure — e.g. the bucket env not being configured
+ * locally — by seeding nothing; the client query then owns the loading/error
+ * state and the upload form still renders.
  */
 async function Dashboard() {
-  let artifacts: Artifact[] = []
-  let listingFailed = false
+  let initialArtifacts: Artifact[] | undefined
   try {
-    artifacts = await listArtifacts()
+    initialArtifacts = await listArtifacts()
   } catch (error) {
     console.error('Could not load artifacts', error)
-    listingFailed = true
   }
 
   return (
@@ -44,13 +44,7 @@ async function Dashboard() {
 
       <section className="bg-card text-card-foreground flex flex-col gap-4 rounded-xl border p-6 shadow-lg">
         <h2 className="text-base font-semibold">Hosted</h2>
-        {listingFailed ? (
-          <p role="alert" className="text-destructive text-sm">
-            Couldn’t load the artifact list — check the bucket configuration.
-          </p>
-        ) : (
-          <ArtifactList artifacts={artifacts} />
-        )}
+        <ArtifactList initialData={initialArtifacts} />
       </section>
     </div>
   )

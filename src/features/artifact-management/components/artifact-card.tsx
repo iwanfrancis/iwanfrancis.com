@@ -1,8 +1,6 @@
 'use client'
 
-import { ExternalLink, Loader2, Trash2 } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { ExternalLink, Trash2 } from 'lucide-react'
 import {
   Card,
   CardContent,
@@ -23,6 +21,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/layout/alert-dialog/alert-dialog'
 import type { Artifact } from '@/features/artifact-management/types/artifact'
+import { useDeleteArtifact } from '../api/delete-artifact'
 import CopyLinkButton from './copy-link-button'
 import UpdateDialog from './update-dialog'
 
@@ -36,19 +35,12 @@ const dateFormat = new Intl.DateTimeFormat('en-GB', {
 })
 
 export default function ArtifactCard({ artifact }: { artifact: Artifact }) {
-  const router = useRouter()
-  const [deleting, setDeleting] = useState(false)
+  const del = useDeleteArtifact()
 
-  async function handleDelete() {
-    setDeleting(true)
-    const response = await fetch(`/api/artifacts/${artifact.slug}`, {
-      method: 'DELETE',
-    })
-    if (response.ok) {
-      router.refresh()
-      return
-    }
-    setDeleting(false)
+  function handleDelete() {
+    // Optimistic: the card unmounts as the list drops this slug. A failure
+    // rolls the list back, so the card reappears.
+    del.mutate(artifact.slug)
   }
 
   return (
@@ -81,12 +73,11 @@ export default function ArtifactCard({ artifact }: { artifact: Artifact }) {
             <Button
               variant="outline"
               size="icon"
-              disabled={deleting}
               aria-label="Delete artifact"
               title="Delete"
               className="text-destructive hover:text-destructive"
             >
-              {deleting ? <Loader2 className="animate-spin" /> : <Trash2 />}
+              <Trash2 />
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>

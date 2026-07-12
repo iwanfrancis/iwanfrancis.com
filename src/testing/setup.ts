@@ -17,3 +17,18 @@ Element.prototype.hasPointerCapture ??= () => false
 Element.prototype.setPointerCapture ??= () => {}
 Element.prototype.releasePointerCapture ??= () => {}
 Element.prototype.scrollIntoView ??= () => {}
+
+// jsdom has no matchMedia; the responsive-overlay `useIsMobile` hook needs it.
+// Report desktop (no match) with a no-op listener API.
+window.matchMedia ??= ((query: string) => ({
+  matches: false,
+  media: query,
+  onchange: null,
+  addEventListener() {},
+  removeEventListener() {},
+  addListener() {},
+  removeListener() {},
+  dispatchEvent() {
+    return false
+  },
+})) as unknown as typeof window.matchMedia

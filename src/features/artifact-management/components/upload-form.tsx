@@ -1,10 +1,10 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import { type FormEvent, useState } from 'react'
 import { Button } from '@/components/inputs/button/button'
 import { Input } from '@/components/inputs/input/input'
 import { Label } from '@/components/inputs/label/label'
+import { useUploadArtifact } from '../api/upload-artifact'
 import FileDropzone from './file-dropzone'
 
 /** Derive a contract-valid slug suggestion from a chosen filename. */
@@ -17,12 +17,11 @@ function slugFromFilename(name: string): string {
 }
 
 export default function UploadForm() {
-  const router = useRouter()
   const [file, setFile] = useState<File | null>(null)
   const [slug, setSlug] = useState('')
   const [title, setTitle] = useState('')
-  const [pending, setPending] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const upload = useUploadArtifact()
 
   function chooseFile(next: File | null) {
     setFile(next)
@@ -32,40 +31,34 @@ export default function UploadForm() {
     }
   }
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!file) {
       setError('Choose a .html file or a .zip bundle first.')
       return
     }
-    setPending(true)
     setError(null)
 
-    const body = new FormData()
-    body.set('file', file)
-    body.set('slug', slug)
-    body.set('title', title)
-
-    const response = await fetch('/api/artifacts', { method: 'POST', body })
-    if (response.ok) {
-      setFile(null)
-      setSlug('')
-      setTitle('')
-      setPending(false)
-      router.refresh()
-      return
-    }
-
-    const data = (await response.json().catch(() => null)) as {
-      error?: string
-    } | null
-    setError(data?.error ?? 'Upload failed.')
-    setPending(false)
+    upload.mutate(
+      { file, slug, title },
+      {
+        onSuccess: () => {
+          setFile(null)
+          setSlug('')
+          setTitle('')
+        },
+        onError: (err) => setError(err.message),
+      }
+    )
   }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <FileDropzone file={file} onFile={chooseFile} disabled={pending} />
+      <FileDropzone
+        file={file}
+        onFile={chooseFile}
+        disabled={upload.isPending}
+      />
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="artifact-slug">Slug</Label>
@@ -105,9 +98,9 @@ export default function UploadForm() {
       <Button
         type="submit"
         className="w-full"
-        disabled={pending || !file || slug.length === 0}
+        disabled={upload.isPending || !file || slug.length === 0}
       >
-        {pending ? 'Uploading…' : 'Upload artifact'}
+        {upload.isPending ? 'Uploading…' : 'Upload artifact'}
       </Button>
     </form>
   )

@@ -1,7 +1,6 @@
 'use client'
 
 import { Pencil } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import { type FormEvent, useState } from 'react'
 import { Button } from '@/components/inputs/button/button'
 import { Input } from '@/components/inputs/input/input'
@@ -17,6 +16,7 @@ import {
   DialogTrigger,
 } from '@/components/layout/dialog/dialog'
 import type { Artifact } from '@/features/artifact-management/types/artifact'
+import { useUpdateArtifact } from '../api/update-artifact'
 import FileDropzone from './file-dropzone'
 
 /**
@@ -26,12 +26,11 @@ import FileDropzone from './file-dropzone'
  * link stays the same.
  */
 export default function UpdateDialog({ artifact }: { artifact: Artifact }) {
-  const router = useRouter()
   const [open, setOpen] = useState(false)
   const [file, setFile] = useState<File | null>(null)
   const [title, setTitle] = useState(artifact.title)
-  const [pending, setPending] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const update = useUpdateArtifact()
 
   function handleOpenChange(next: boolean) {
     setOpen(next)
@@ -40,38 +39,25 @@ export default function UpdateDialog({ artifact }: { artifact: Artifact }) {
       setFile(null)
       setTitle(artifact.title)
       setError(null)
-      setPending(false)
+      update.reset()
     }
   }
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!file) {
       setError('Choose a .html file or a .zip bundle first.')
       return
     }
-    setPending(true)
     setError(null)
 
-    const body = new FormData()
-    body.set('file', file)
-    body.set('title', title)
-
-    const response = await fetch(`/api/artifacts/${artifact.slug}`, {
-      method: 'PUT',
-      body,
-    })
-    if (response.ok) {
-      handleOpenChange(false)
-      router.refresh()
-      return
-    }
-
-    const data = (await response.json().catch(() => null)) as {
-      error?: string
-    } | null
-    setError(data?.error ?? 'Update failed.')
-    setPending(false)
+    update.mutate(
+      { slug: artifact.slug, file, title },
+      {
+        onSuccess: () => handleOpenChange(false),
+        onError: (err) => setError(err.message),
+      }
+    )
   }
 
   return (
@@ -118,7 +104,11 @@ export default function UpdateDialog({ artifact }: { artifact: Artifact }) {
             />
           </div>
 
-          <FileDropzone file={file} onFile={setFile} disabled={pending} />
+          <FileDropzone
+            file={file}
+            onFile={setFile}
+            disabled={update.isPending}
+          />
 
           {error && (
             <p role="alert" className="text-destructive text-sm">
@@ -132,8 +122,8 @@ export default function UpdateDialog({ artifact }: { artifact: Artifact }) {
                 Cancel
               </Button>
             </DialogClose>
-            <Button type="submit" disabled={pending || !file}>
-              {pending ? 'Replacing…' : 'Replace files'}
+            <Button type="submit" disabled={update.isPending || !file}>
+              {update.isPending ? 'Replacing…' : 'Replace files'}
             </Button>
           </DialogFooter>
         </form>

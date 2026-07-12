@@ -1,13 +1,8 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { renderWithClient } from '@/testing/render-with-client'
 import UploadForm from './upload-form'
-
-const { refresh } = vi.hoisted(() => ({ refresh: vi.fn() }))
-
-vi.mock('next/navigation', () => ({
-  useRouter: () => ({ refresh }),
-}))
 
 const fetchMock = vi.fn()
 
@@ -36,7 +31,7 @@ describe('UploadForm', () => {
   it('disables uploading until a file is chosen and a slug is set', async () => {
     // Arrange
     const user = userEvent.setup()
-    const { container } = render(<UploadForm />)
+    const { container } = renderWithClient(<UploadForm />)
 
     // Assert (initial) / Act / Assert
     expect(
@@ -51,7 +46,7 @@ describe('UploadForm', () => {
   it('suggests a contract-valid slug from the chosen filename', async () => {
     // Arrange
     const user = userEvent.setup()
-    const { container } = render(<UploadForm />)
+    const { container } = renderWithClient(<UploadForm />)
 
     // Act
     await user.upload(fileInput(container), htmlFile('My Demo!.html'))
@@ -63,7 +58,7 @@ describe('UploadForm', () => {
   it('keeps a manually entered slug when a file is chosen after it', async () => {
     // Arrange
     const user = userEvent.setup()
-    const { container } = render(<UploadForm />)
+    const { container } = renderWithClient(<UploadForm />)
 
     // Act
     await user.type(screen.getByLabelText('Slug'), 'hand-picked')
@@ -77,23 +72,22 @@ describe('UploadForm', () => {
     // Arrange
     const user = userEvent.setup()
     fetchMock.mockResolvedValue({ ok: true })
-    const { container } = render(<UploadForm />)
+    const { container } = renderWithClient(<UploadForm />)
     await user.upload(fileInput(container), htmlFile())
     await user.type(screen.getByLabelText('Title'), 'My demo')
 
     // Act
     await user.click(screen.getByRole('button', { name: 'Upload artifact' }))
 
-    // Assert
-    await waitFor(() => expect(refresh).toHaveBeenCalled())
+    // Assert — the form resets once the upload succeeds.
+    await waitFor(() => expect(screen.getByLabelText('Slug')).toHaveValue(''))
+    expect(screen.getByLabelText('Title')).toHaveValue('')
     const [url, init] = fetchMock.mock.calls[0]
     expect(url).toBe('/api/artifacts')
     expect(init.method).toBe('POST')
     expect(init.body).toBeInstanceOf(FormData)
     expect(init.body.get('slug')).toBe('my-demo')
     expect(init.body.get('title')).toBe('My demo')
-    expect(screen.getByLabelText('Slug')).toHaveValue('')
-    expect(screen.getByLabelText('Title')).toHaveValue('')
   })
 
   it('surfaces the server error message on a failed upload', async () => {
@@ -103,7 +97,7 @@ describe('UploadForm', () => {
       ok: false,
       json: async () => ({ error: 'slug "my-demo" is already in use' }),
     })
-    const { container } = render(<UploadForm />)
+    const { container } = renderWithClient(<UploadForm />)
     await user.upload(fileInput(container), htmlFile())
 
     // Act
@@ -113,7 +107,8 @@ describe('UploadForm', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent(
       'slug "my-demo" is already in use'
     )
-    expect(refresh).not.toHaveBeenCalled()
+    // The entered data is kept so the upload can be retried.
+    expect(screen.getByLabelText('Slug')).toHaveValue('my-demo')
   })
 
   it('falls back to a generic message when the error body is unreadable', async () => {
@@ -125,7 +120,7 @@ describe('UploadForm', () => {
         throw new Error('not json')
       },
     })
-    const { container } = render(<UploadForm />)
+    const { container } = renderWithClient(<UploadForm />)
     await user.upload(fileInput(container), htmlFile())
 
     // Act

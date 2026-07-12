@@ -53,6 +53,7 @@ Package manager: **yarn** (classic / v1).
 - **Tailwind CSS v4** — config lives in CSS (`src/globals.css` via `@theme`), not a JS config file
 - **shadcn/ui** (new-york style) with **Radix** primitives, **lucide-react** icons
 - Styling helpers: `cva` (class-variance-authority) + `cn()` (`src/utils/cn.ts`, clsx + tailwind-merge)
+- **TanStack Query** (`@tanstack/react-query`) for client-side data-fetching — see the convention below
 
 ## Architecture & conventions
 
@@ -86,6 +87,20 @@ doc. Keep new code within these conventions.
 - Avoid barrel / `index.ts` re-export files — import the specific file directly.
 - Not auto-enforced: Biome has no path-boundary rule equivalent to bulletproof's ESLint
   `import/no-restricted-paths`, so these import rules rely on you and on review.
+
+**Client data-fetching — TanStack Query.** ALWAYS use TanStack Query for client-side reads and
+mutations; don't hand-roll `fetch` + `useState`/`useEffect` or lean on `router.refresh()` for
+freshness.
+
+- The single app-wide `QueryClient` is built in `src/lib/react-query.ts` (`makeQueryClient`) and
+  provided in `src/app/provider.tsx`. Its cache-level error handler bounces an `UnauthorizedError`
+  (a 401 from any fetcher) to `/login`, so throw `UnauthorizedError` from a fetcher on 401.
+- Put query/mutation hooks in the feature's `api/` folder, one file per operation (see
+  `features/artifact-management/api/*`). Mutations invalidate the relevant query key on success.
+- For a server-rendered list, fetch it in the RSC and pass it to the client `useQuery` as
+  `initialData` (no loading flash); the query then keeps it fresh (refetch on focus + after
+  mutations). Reserve `HydrationBoundary`/`dehydrate` for when a route prefetches several queries.
+- Tests render query/mutation components with `renderWithClient` (`src/testing/`).
 
 ## Code style
 
