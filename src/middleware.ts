@@ -27,6 +27,10 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
+  // NB: `/api/ingest` is deliberately absent. That route is token-authenticated
+  // (bearer, not the admin session cookie) and must stay outside this cookie
+  // gate — adding it here would 401 every ingest request. See
+  // src/app/api/ingest/route.ts.
   matcher: [
     '/artifacts',
     '/artifacts/:path*',

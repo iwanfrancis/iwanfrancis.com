@@ -19,7 +19,10 @@ gates its `/artifacts` admin surface behind a self-contained password login (cha
 management UI (change ③, the `artifact-management` feature at `src/features/artifact-management/`):
 drag-and-drop upload of a single `.html` or a `.zip` bundle, plus a listing with copy-link and
 delete. It writes to the same Railway Bucket as `artifact-server` using the main app's own
-`ARTIFACTS_S3_*` credentials (never added to `artifact-server`); see
+`ARTIFACTS_S3_*` credentials (never added to `artifact-server`). There is also a headless
+`POST /api/ingest` (change ⑤, `artifact-ingest`) authenticated by a bearer `ARTIFACTS_API_TOKEN`
+(not the admin cookie) — it lives outside the `/api/artifacts*` middleware gate and re-hosts a
+posted `.html` for the iOS "share to artifacts" Shortcut. See
 `openspec/notes/artifact-hosting-roadmap.md`.
 
 Deployed on **Railway**, served at **iwans.space** with DNS on **Cloudflare** (proxied /

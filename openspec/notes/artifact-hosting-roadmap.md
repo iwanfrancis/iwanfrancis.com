@@ -1,15 +1,17 @@
-# Artifact hosting — roadmap (changes ②–④)
+# Artifact hosting — roadmap (changes ②–⑤)
 
 Hosting for shareable Claude artifacts is being built as a **sequence of OpenSpec changes**. ①②③④
-are all shipped; this note captures **④ artifact-update** (in-place updates behind an existing slug)
-alongside the original ②③ exploration, kept for history. Another agent can pick up a not-yet-proposed
-section and run `/opsx:propose` without re-deriving the decisions we already made.
+are shipped and ⑤ is implemented; this note captures **④ artifact-update** (in-place updates behind an
+existing slug) alongside the original ②③ exploration, kept for history, plus **⑤ artifact-ingest**
+(token-authenticated headless upload). Another agent can pick up a not-yet-proposed section and run
+`/opsx:propose` without re-deriving the decisions we already made.
 
 ```
 ① artifact-hosting      storage + public serving substrate   ← SHIPPED (specs/artifact-hosting/; archive/2026-07-07-artifact-hosting)
 ② auth                  self-contained gate for the admin UI  ← SHIPPED (specs/auth/; archive/2026-07-07-auth); deploy = set Railway env
 ③ artifact-management   upload API + drag-drop UI + listing   ← SHIPPED (specs/artifact-management/; archive/2026-07-11-artifact-management)
 ④ artifact-update       in-place replace of a slug + ETag caching  ← SHIPPED (specs synced; archive/2026-07-11-artifact-update)
+⑤ artifact-ingest       token-auth POST /api/ingest for the iOS share Shortcut  ← IMPLEMENTED (change artifact-ingest-api; pending archive); deploy = set ARTIFACTS_API_TOKEN
 ```
 
 **Read `openspec/changes/archive/2026-07-07-artifact-hosting/{proposal,design,specs,tasks}.md` first** — it holds the
@@ -231,3 +233,40 @@ deferred (archived ① design, "Risks & mitigations").
   `artifact-server` gains only a **response-header change**, no new secrets, and stays public/read-only.
 - This is the change that **revises the "slugs are immutable" invariant** and the ①
   `artifact-hosting` spec's "cached as immutable" requirement — update both when it ships.
+
+---
+
+## ⑤ artifact-ingest
+
+**Goal**: a one-tap "share to my artifacts page" from the Claude iOS app. Claude's "download HTML"
+opens the system share sheet with the artifact's self-contained `.html`; an iOS Shortcut (share-sheet
+target) POSTs it to a token-authenticated endpoint that re-hosts it under `artifacts.iwans.space`.
+
+- **Repo**: `iwanfrancis.com` (main site). **Capability**: `artifact-ingest` (`specs/artifact-ingest/`).
+- **Depends on**: ③'s write path (`entriesFromUpload`, `putObject`, `slugExists`, `artifactUrl`).
+
+**Decisions (locked in implementation):**
+
+- **Bearer token, not the session cookie.** New `ARTIFACTS_API_TOKEN` env secret, timing-safe compared
+  in a Node route via `node:crypto` (mirrors `verifyPassword`). Independent of the admin cookie and
+  `ARTIFACTS_SECRET`. A machine client needs a stable credential; the ~7-day cookie is the wrong tool.
+- **Separate route at `/api/ingest`, outside the middleware matcher.** The cookie gate would 401 a
+  token request before any handler runs, and middleware is Edge (no `node:crypto`). Keeping ingest out
+  of the matcher lets the Node handler own token auth. `src/middleware.ts` carries a comment pinning
+  this invariant; `middleware.test.ts` isn't affected (ingest was never in scope).
+- **Raw HTML body is the primary contract** (Shortcut-native), `multipart/form-data` also accepted
+  (reuses `entriesFromUpload`, so a `.zip` works there too). Optional title via `X-Artifact-Title`
+  (raw) or a `title` field (multipart).
+- **Server generates the slug** (`slugify` + `generateUniqueSlug`, short random suffix on collision);
+  the caller never supplies one. Create-only — no list/update/delete over token auth.
+- **No SSRF surface**: the endpoint ingests posted bytes, never fetches a URL (possible only because
+  Claude hands over the file). **No same-origin/CSRF check**: a bearer token is never ambient.
+
+**Origin-isolation invariants intact**: the ingest token is a distinct credential, writes go through
+the main app's own S3 creds, and nothing new is added to `artifact-server`.
+
+**Deploy**: set `ARTIFACTS_API_TOKEN` (`openssl rand -base64 32`) on the **main app** Railway service
+only. Then build the iOS Shortcut per `changes/archive/<date>-artifact-ingest-api/notes/ios-shortcut.md`.
+
+**Deferred (open for a later change):** an explicit `X-Artifact-Slug` override; a macOS-specific
+trigger (the drag-drop UI and a `curl` alias already cover desktop).
