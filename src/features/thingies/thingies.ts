@@ -110,4 +110,10 @@ export const thingies: ThingyEntry[] = [
     date: '2026-07-06',
     load: () => import('./thingies/0015-dvd-bounce'),
   },
+  {
+    id: '0016-self-playing-tetris',
+    title: 'Self-playing tetris',
+    date: '2026-10-08',
+    load: () => import('./thingies/0016-self-playing-tetris'),
+  },
 ]
