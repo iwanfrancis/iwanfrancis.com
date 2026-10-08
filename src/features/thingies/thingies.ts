@@ -116,4 +116,10 @@ export const thingies: ThingyEntry[] = [
     date: '2026-10-08',
     load: () => import('./thingies/0016-self-playing-tetris'),
   },
+  {
+    id: '0017-pixel-water-simulation',
+    title: 'Pixel water simulation',
+    date: '2026-10-08',
+    load: () => import('./thingies/0017-pixel-water-simulation'),
+  },
 ]

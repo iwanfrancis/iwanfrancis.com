@@ -43,6 +43,13 @@ already meets it; if you hand-author one, follow this.
 - **Be decorative and non-interactive.** The frame already renders content with
   `pointer-events: none`, so a tile can never capture a drag. Don't add click /
   hover / focus handlers or focusable elements. For SVG, set `aria-hidden="true"`.
+  - **Cursor-reactive is allowed; interactive is not.** A tile may *react* to the
+    cursor passing over it (`0017-pixel-water-simulation` stirs its water). Read the
+    position from a passive `pointermove` listener on `window`, attached only while
+    `useThingyActive()` is true, and map it through the tile's own
+    `getBoundingClientRect()` (which already accounts for canvas pan and zoom).
+    Never put handlers on the tile's own elements or call `preventDefault`, and keep
+    the tile complete without a cursor — touch visitors never move one over it.
 - **Honour `prefers-reduced-motion`.** Gate every animation behind Tailwind's
   `motion-safe:` variant (e.g. `motion-safe:animate-pulse`). A reduced-motion
   visitor must see a sensible static result, never continuous motion.
