@@ -122,4 +122,10 @@ export const thingies: ThingyEntry[] = [
     date: '2026-10-08',
     load: () => import('./thingies/0017-pixel-water-simulation'),
   },
+  {
+    id: '0018-cursor-mirror',
+    title: 'Cursor mirror',
+    date: '2026-10-08',
+    load: () => import('./thingies/0018-cursor-mirror'),
+  },
 ]

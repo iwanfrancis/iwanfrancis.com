@@ -50,6 +50,11 @@ already meets it; if you hand-author one, follow this.
     `getBoundingClientRect()` (which already accounts for canvas pan and zoom).
     Never put handlers on the tile's own elements or call `preventDefault`, and keep
     the tile complete without a cursor — touch visitors never move one over it.
+  - **A drawing of the cursor itself is sized in screen px, not to the tile.** The
+    one exception to *scale-independent*: a cursor drawn to stand in for the real one
+    (`0018-cursor-mirror`'s reflection) must match the real cursor at any zoom, so
+    size it from the tile's `getBoundingClientRect()` (viewBox units per screen px).
+    Everything else in the tile stays scale-independent.
 - **Honour `prefers-reduced-motion`.** Gate every animation behind Tailwind's
   `motion-safe:` variant (e.g. `motion-safe:animate-pulse`). A reduced-motion
   visitor must see a sensible static result, never continuous motion.
