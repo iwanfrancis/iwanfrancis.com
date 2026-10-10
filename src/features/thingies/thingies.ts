@@ -128,4 +128,10 @@ export const thingies: ThingyEntry[] = [
     date: '2026-10-08',
     load: () => import('./thingies/0018-cursor-mirror'),
   },
+  {
+    id: '0019-windows-pipes-screensaver',
+    title: 'Windows pipes screensaver',
+    date: '2026-10-10',
+    load: () => import('./thingies/0019-windows-pipes-screensaver'),
+  },
 ]
