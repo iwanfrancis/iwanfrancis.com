@@ -134,4 +134,10 @@ export const thingies: ThingyEntry[] = [
     date: '2026-10-10',
     load: () => import('./thingies/0019-windows-pipes-screensaver'),
   },
+  {
+    id: '0020-infinite-mirror',
+    title: 'Infinite mirror',
+    date: '2026-10-10',
+    load: () => import('./thingies/0020-infinite-mirror'),
+  },
 ]
